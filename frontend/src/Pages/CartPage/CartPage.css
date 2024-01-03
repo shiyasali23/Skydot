@@ -1,0 +1,125 @@
+
+  
+  /* --------------Main-Container------------ */
+  
+  .cart-container {
+    width: 80%;
+    height: 540px;
+    margin: 20px 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .cart-left {
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 3px, rgba(0, 0, 0, 0.08) 0 0 6px,
+      rgba(0, 0, 0, 0.06) 0 0 9px;
+  }
+  
+  .cart-right {
+    width: 40%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  
+  
+  .subtotal {
+    color: #283618;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  
+  }
+  
+  
+  .shipping{
+    color: #283618;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .shipping-selector{
+    color: #283618;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 40px;
+    
+  }
+  
+  .total {
+    color: #283618;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  
+  }
+  
+  @media screen and (max-width: 768px){
+  
+  
+    .cart-container {
+      width: 90%;
+      height: 500px;
+      margin: 20px 5%;
+      flex-direction: column;
+    }
+  
+    .subtotal h5{
+      font-size: 10px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .subtotal p{
+      font-size: 15px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .shipping-selector label{
+      font-size: 10px;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+    .shipping-selector input{
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+    }
+  
+    .shipping-fee p{
+      width: 30px;
+      height: 15px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-weight: 400;
+      margin-top: 17px;
+      color: green;
+    }
+  
+    .total h5{
+      font-size: 13px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .total p{
+      font-size: 15px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+  
+  }
+  

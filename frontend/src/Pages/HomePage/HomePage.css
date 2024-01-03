@@ -1,0 +1,11 @@
+
+.store-container{
+    width: 90%;
+    margin: 0px 5%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 100px;
+}
+

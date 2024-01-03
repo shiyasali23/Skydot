@@ -1,0 +1,74 @@
+.basket-container {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90%;
+  margin: 10px 5%;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 3px, rgba(0, 0, 0, 0.08) 0 0 6px,
+    rgba(0, 0, 0, 0.06) 0 0 9px;
+}
+
+.basket-image {
+  width: 115px;
+  height: 150px;
+}
+
+.basket-image img {
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.basket-name {
+  color: #283618;
+}
+
+.basket-size {
+  color: #283618;
+}
+
+.basket-subtotal {
+  color: #283618;
+}
+
+.basket-trash i {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .basket-container {
+    height: 90px;
+    justify-content: space-between;
+  }
+
+  .basket-image {
+    width: 70px;
+    height: 105px;
+  }
+
+  .basket-name p {
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  .basket-size p {
+    font-size: 10px;
+    font-weight: 400;
+  }
+
+  .basket-quantity input {
+    width: 30px;
+    height: 13px;
+  }
+
+  .basket-subtotal p {
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .deleticon {
+    font-size: 10px;
+  }
+}
