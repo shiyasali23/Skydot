@@ -12,7 +12,7 @@
   letter-spacing: 8px;
   font-size: 35px;
   font-weight: 800;
-  color: #283618;
+  color: #404838;
   margin-left: 80px;
 }
 
@@ -29,7 +29,7 @@
   font-size: 16px;
   letter-spacing: 3px;
   font-weight: 400;
-  color: #283618;
+  color: #404838;
 }
 
 .nav-list li:hover {
@@ -52,7 +52,7 @@
   background-color: #fff;
   font-size: 20px;
   font-weight: 600;
-  color: #283618;
+  color: #404838;
   border: none;
 }
 
@@ -60,7 +60,7 @@
   text-align: center;
   width: 90px;
   font-size: 21px;
-  color: #283618;
+  color: #404838;
 }
 
 /* ---------------------------------------- */
@@ -77,7 +77,7 @@
   font-size: 21px;
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
-  color: #283618;
+  color: #404838;
 }
 
 .cart-icon:hover {
@@ -86,7 +86,7 @@
 
 .cart-quantity {
   font-size: 19px;
-  color: #283618;
+  color: #404838;
   font-weight: 800;
   margin-bottom: 4px;
 }

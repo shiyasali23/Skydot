@@ -4,6 +4,7 @@ import Footer from "../../Components/Footer/Footer";
 import BasketContainer from "../../Components/BasketContainer/BasketContaier";
 import { cartContext } from "../../Contexts/CartContext";
 import Header from "../../Components/Header/Header";
+import { useNavigate } from "react-router-dom";
 
 
 const CartPage = () => {
@@ -11,8 +12,11 @@ const CartPage = () => {
   const [selectedShipping, setSelectedShipping] = useState("standard");
   const shippingFee = selectedShipping === "express" ? 40 : 0;
   const subtotal = cartArray.reduce((accumulator, product) => accumulator + product.total, 0);
+  const navigate = useNavigate()
 
-
+  const handleChekout = () =>{
+    navigate('/checkout')
+  }
 
   return (
     <div className="cart">
@@ -71,7 +75,7 @@ const CartPage = () => {
             <p>$ {subtotal + shippingFee}</p>
           </div>
           <div className="chechkout">
-            <button>Checkout</button>
+            <button onClick={handleChekout}>Checkout</button>
           </div>
         </div>
       </div>

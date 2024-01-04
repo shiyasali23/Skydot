@@ -3,18 +3,17 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProductPage from "./Pages/ProductPage/ProductPage";
 import HomeScreen from "./Pages/HomePage/HomePage";
 import CartPage from "./Pages/CartPage/CartPage";
-import LoginPage from "./Pages/LoginPage/LoginPage";
+import CheckoutPage from "./Pages/CheckoutPage/CheckoutPage";
 import BlogPage from "./Pages/BlogPage/BlogPage";
-import SignUpPage from "./Pages/SignUpPage/SignUpPage";
-import AccountPage from "./Pages/AccountPage/AccountPage";
+import OrderPage from "./Pages/OrderPage/OrderPage";
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { CartProvider } from "./Contexts/CartContext";
-import { UserProvider } from "./Contexts/UserContext";
+import { GuestProvider } from "./Contexts/GuestContext";
 
 function App() {
   return (
     <div className="App">
-  <UserProvider>
+  <GuestProvider>
       <ProductsProvider>
         <CartProvider>
         <BrowserRouter>
@@ -25,15 +24,14 @@ function App() {
             <Route path="/pants" element={<HomeScreen category={"pants"}/>} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="product/:id" element={<ProductPage />} />
-            <Route path="/account" element={<AccountPage />} />
+            <Route path="/orders" element={<OrderPage />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
           </Routes>
         </BrowserRouter>
         </CartProvider>
       </ProductsProvider>
-      </UserProvider>
+      </GuestProvider>
     </div>
   );
 }

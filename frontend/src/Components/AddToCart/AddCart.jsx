@@ -75,7 +75,7 @@ const AddCart = ({ id }) => {
             stocksObj[size] > 0 && (
               <button
                 key={size}
-                className="size-button"
+                className="addcart-size-button"
                 onClick={() => handleSizeClick(size)}
                 style={{
                   background: selectedSizes.includes(size)
