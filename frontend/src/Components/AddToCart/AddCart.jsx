@@ -67,6 +67,7 @@ const AddCart = ({ id }) => {
     });
   };
 
+  console.log(('lll',typeof(cartArray)));
   return (
     <div className="addcart-wraper">
       <div className="sizes-container">

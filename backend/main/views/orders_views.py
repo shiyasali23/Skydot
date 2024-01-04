@@ -21,22 +21,32 @@ def registerOrder(request):
                 serializer.is_valid(raise_exception=True)
             except serializers.ValidationError as validation_error:
                 print(1,validation_error)
-                return Response({'error': validation_error.detail}, status=status.HTTP_400_BAD_REQUEST)
+                data = {
+                    'message': validation_error.detail
+                }
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 serializer.save()
             except serializers.ValidationError as save_error:
                 print(2,save_error)
-                return Response({'error': save_error.detail}, status=status.HTTP_400_BAD_REQUEST)
+                data = {
+                    'message' : save_error
+                }
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             except Exception as generic_error:
                 print(3,generic_error)
-                return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                data = {
+                    'message' : generic_error
+                }
+                return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            report = {
+            data = {
                 'message':'Registration Success',
                 'data' : serializer.data
             }
-            return Response(report, status=status.HTTP_201_CREATED)
+            print(data)
+            return Response(data, status=status.HTTP_201_CREATED)
 
     except Exception as generic_error:
         print(4,generic_error)

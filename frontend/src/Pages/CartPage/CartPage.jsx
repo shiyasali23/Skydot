@@ -1,23 +1,38 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./CartPage.css";
+import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import BasketContainer from "../../Components/BasketContainer/BasketContaier";
 import { cartContext } from "../../Contexts/CartContext";
-import Header from "../../Components/Header/Header";
-import { useNavigate } from "react-router-dom";
+import { checkoutContext } from "../../Contexts/CheckoutContext";
 
 
 const CartPage = () => {
   const { cartArray } = useContext(cartContext);
+  const { setCheckoutObj } = useContext(checkoutContext)
   const [selectedShipping, setSelectedShipping] = useState("standard");
   const shippingFee = selectedShipping === "express" ? 40 : 0;
   const subtotal = cartArray.reduce((accumulator, product) => accumulator + product.total, 0);
   const navigate = useNavigate()
 
   const handleChekout = () =>{
+
+    const cartInfo = {
+      shippingPrice: shippingFee,
+      totalPrice: subtotal + shippingFee
+    };
+  
+    const checkoutData = {
+      checkoutItems: cartArray,
+      checkoutInfo: cartInfo,
+    };
+    setCheckoutObj(checkoutData);
+   
     navigate('/checkout')
   }
-
+console.log(typeof(cartArray));
   return (
     <div className="cart">
       <Header/>
@@ -74,8 +89,8 @@ const CartPage = () => {
             <h5>Total</h5>
             <p>$ {subtotal + shippingFee}</p>
           </div>
-          <div className="chechkout">
-            <button onClick={handleChekout}>Checkout</button>
+          <div className="checkout">
+            <button className="cart-checkout-button" onClick={handleChekout}>Checkout</button>
           </div>
         </div>
       </div>

@@ -106,8 +106,8 @@ class OrderItem(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
-    size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=False, blank=False)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=1)
+    size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=False, blank=False)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
