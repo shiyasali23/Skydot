@@ -20,7 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class RegisterGuestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guest
-        fields = ['id', 'name', 'email', 'phone_number', 'address', 'pincode', 'created']
+        fields = ['id', 'name', 'email', 'phone_number', 'city', 'pincode', 'address',]
         
 
     def create(self, validated_data):
@@ -52,7 +52,7 @@ class OrderRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 'owner', 'taxPrice', 'shippingPrice', 'totalPrice',
+            'id', 'owner', 'tax_price', 'shipping_price', 'total_price', 'isWhatsapp',
             'payment_method', 'isDelivered', 'deliveredAt', 'status',
             'tracking_id', 'order_items', 'created'
         ]

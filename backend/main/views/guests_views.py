@@ -31,11 +31,11 @@ def registerGuest(request):
                 print(2,save_error)
                 return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            report = {
+            data = {
                 'message':'Registration Success',
                 'data' : serializer.data
             }
-            return Response(report, status=status.HTTP_201_CREATED)
+            return Response(data, status=status.HTTP_201_CREATED)
 
     except Exception as generic_error:
         print(3,generic_error)

@@ -32,7 +32,6 @@ const CartPage = () => {
    
     navigate('/checkout')
   }
-console.log(typeof(cartArray));
   return (
     <div className="cart">
       <Header/>

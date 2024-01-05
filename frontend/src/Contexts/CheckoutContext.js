@@ -7,7 +7,6 @@ export const CheckoutProvider = ({ children }) => {
   const checkoutItems = checkoutObj?.checkoutItems ?? [];
   const ItemsArray = [];
  
-console.log(checkoutItems, typeof(checkoutItems));
 
 checkoutItems.forEach((cartItem) => {
   const { id, userNeeds } = cartItem;

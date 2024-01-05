@@ -21,6 +21,7 @@ class Guest(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
     email = models.EmailField(null=False, blank=False)
     phone_number = models.CharField(max_length=15, null=False, blank=False)
+    city = models.CharField(max_length=20, default='DefaultCity', null=False, blank=False)
     address = models.TextField(null=False, blank=False)
     pincode = models.CharField(max_length=10, null=False, blank=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -80,9 +81,10 @@ class Order(models.Model):
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     owner = models.ForeignKey(Guest, on_delete=models.SET_NULL, null=True, blank=False) 
-    taxPrice = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
-    shippingPrice = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
-    totalPrice = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
+    tax_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
+    shipping_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
+    total_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
+    isWhatsapp = models.BooleanField(default=False)
     payment_method = models.CharField(max_length=50, null=False, blank=False)
     isDelivered = models.BooleanField(default=False)
     deliveredAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
@@ -90,7 +92,8 @@ class Order(models.Model):
     tracking_id = models.CharField(max_length=20, null=False, blank=False,unique=True)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return str(self.id)
+        order = f"{str(self.tracking_id)}-{str(self.owner)}"
+        return order
 
 
 

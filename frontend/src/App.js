@@ -9,6 +9,7 @@ import OrderPage from "./Pages/OrderPage/OrderPage";
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { CartProvider } from "./Contexts/CartContext";
 import { CheckoutProvider } from "./Contexts/CheckoutContext";
+import { GuestProvider } from "./Contexts/GuestContext";
 import { OrderProvider } from "./Contexts/OrderContext";
 
 function App() {
@@ -17,7 +18,9 @@ function App() {
       <ProductsProvider>
         <CartProvider>
           <CheckoutProvider>
-            <OrderProvider>
+          <OrderProvider>
+            <GuestProvider>
+            
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomeScreen />} />
@@ -31,6 +34,8 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
           </Routes>
         </BrowserRouter>
+        
+        </GuestProvider>
         </OrderProvider>
         </CheckoutProvider>
         </CartProvider>
