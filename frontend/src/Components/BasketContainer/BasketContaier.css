@@ -1,18 +1,40 @@
 .basket-container {
-  padding: 10px;
+  width: 94%;
+  height: 200px;
+  margin: 10px 2%;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: 90%;
-  margin: 10px 5%;
-  border-radius: 5px;
+  padding: 10px 20px;
+  /* border: 1px solid black; */
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 3px, rgba(0, 0, 0, 0.08) 0 0 6px,
     rgba(0, 0, 0, 0.06) 0 0 9px;
 }
+.basket-left{
+  /* border: 1px solid black; */
+  width: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+
+}
+.basket-right{
+  height: 20%;
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+
+  /* border: 1px solid black; */
+
+}
 
 .basket-image {
-  width: 115px;
-  height: 150px;
+  width: 60%;
+  height: 80%;
+  /* border: 1px solid black; */
+
 }
 
 .basket-image img {
@@ -22,7 +44,11 @@
 }
 
 .basket-name {
+  display: flex;
+  width: 100%;
+  /* border: 1px solid black; */
   color: #283618;
+  margin-top: 3px;
 }
 
 .basket-size {
@@ -33,42 +59,35 @@
   color: #283618;
 }
 
-.basket-trash i {
+.basket-delete{
   cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {
   .basket-container {
-    height: 90px;
-    justify-content: space-between;
+    height: 140px;
+    padding: 8px 5px;
   }
 
-  .basket-image {
-    width: 70px;
-    height: 105px;
+
+  .basket-image{
+    width: 80%;
   }
 
-  .basket-name p {
-    font-size: 11px;
-    font-weight: 400;
-  }
-
-  .basket-size p {
+  .basket-name {
     font-size: 10px;
-    font-weight: 400;
   }
 
-  .basket-quantity input {
-    width: 30px;
-    height: 13px;
-  }
-
-  .basket-subtotal p {
+  .basket-size {
     font-size: 10px;
-    font-weight: 800;
   }
 
-  .deleticon {
+
+  .basket-subtotal{
+    font-size: 10px;
+  }
+
+  .basket-delete {
     font-size: 10px;
   }
 }

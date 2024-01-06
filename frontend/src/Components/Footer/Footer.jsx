@@ -19,12 +19,7 @@ const Footer = () => {
         <div className="footer-right">
           <form className="footer-form">
             <input className="footer-email-input" type="email" placeholder="Email" />
-            <input
-              className="message-input"
-              type="text"
-              placeholder="Message"
-            />
-            <input className="connect-button" type="submit" />
+            <input className="connect-button" type="submit" value="Subscribe"/>
           </form>
         </div>
       

@@ -13,8 +13,8 @@
   transition: transform 0.3s ease-in-out;
 }
 .product-card:hover {
-  box-shadow: 5px 5px 0px #dedede, 
-              -5px -5px 0px #e2e2e2;
+  transform: scale(1.1);
+ 
 }
 
 .product-card-top {
@@ -42,13 +42,14 @@
 
 .product-name {
   font-weight: 400;
-  font-size: 17px;
+  font-size: 15px;
   color: #191c16;
   position: relative;
-  top: 20%;
+  top: 13%;
   left: 15px;
   width: 280px;
   letter-spacing: 1px;
+
 }
 
 .product-price {
@@ -56,14 +57,16 @@
   font-weight: 200;
   color: #191c16;
   position: relative;
-  top: 38%;
   left: 15px;
-  width: 60px;
+  top: 10%;
+  width: 20%;
+
 }
+
 
 @media screen and (max-width: 768px) {
   .product-card {
-    margin-top: 40px;
+    margin-top: 20px;
     height: 480px;
   }
 }

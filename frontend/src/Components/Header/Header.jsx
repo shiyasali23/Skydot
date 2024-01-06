@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import "./Header.css";
 import { Link } from "react-router-dom";
 import { cartContext } from "../../Contexts/CartContext";
@@ -7,13 +7,8 @@ const Header = () => {
   const { cartArray } = useContext(cartContext);
   const cartLength = cartArray.length;
 
-
- 
-
-
-
   return (
-    <div className="navbar">
+    <div className="navbar" >
       <div className="nav-container">
         <Link to="/" style={{ textDecoration: "none" }}>
           <h1 className="nav-logo">SKYDOT</h1>
@@ -33,7 +28,7 @@ const Header = () => {
             <li>Orders</li>
           </Link>
         </ul>
-        
+
         <div className="nav-cart-container">
           <p
             className="cart-quantity"
@@ -49,6 +44,7 @@ const Header = () => {
           </Link>
         </div>
       </div>
+      
     </div>
   );
 };

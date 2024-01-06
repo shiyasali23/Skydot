@@ -11,6 +11,7 @@ const HomeScreen = ({ category }) => {
   return (
     <div>
       <Header />
+      
 
       <div className="store-container">
         {productsArray
@@ -31,3 +32,5 @@ const HomeScreen = ({ category }) => {
 };
 
 export default HomeScreen;
+
+
