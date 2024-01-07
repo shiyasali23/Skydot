@@ -1,12 +1,11 @@
 import axios from "axios";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext } from "react";
 import { orderContext } from "./OrderContext";
 
 export const guestContext = createContext();
 
 export const GuestProvider = ({ children }) => {
     const { registerOrder } = useContext(orderContext)
-  const [guest, setGuest] = useState(null);
 
   const registerGuest = async (
     name,

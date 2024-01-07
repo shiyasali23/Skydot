@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { checkoutContext } from "./CheckoutContext";
 import axios from "axios";
 
@@ -12,7 +12,6 @@ export const OrderProvider = ({ children }) => {
   })
 
   const registerOrder = async (ownerId, isWhatsapp) => {
-    console.log("order", ownerId);
     const order = {
       owner: ownerId,
       tax_price: 0.0,
@@ -20,7 +19,7 @@ export const OrderProvider = ({ children }) => {
       total_price: checkoutObj?.checkoutInfo?.shippingPrice ?? 0,
       isWhatsapp: isWhatsapp,
       payment_method: "UPI",
-      tracking_id: "tdr3",
+      tracking_id: "A3",
       order_items: ItemsArray,
     };
     try {
@@ -37,7 +36,7 @@ export const OrderProvider = ({ children }) => {
           message: response.data.message,
           data: response.data.data,
         });
-        console.error(response.data.message);
+        console.info(response.data.message);
       }
     } catch (error) {
       if (error.response.status !== 500 && error.response.status !== 201) {

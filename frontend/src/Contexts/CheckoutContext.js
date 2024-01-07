@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext } from "react";
 
 export const checkoutContext = createContext();
 
@@ -9,10 +9,11 @@ export const CheckoutProvider = ({ children }) => {
  
 
 checkoutItems.forEach((cartItem) => {
-  const { id, userNeeds } = cartItem;
+  const { name, id, userNeeds } = cartItem;
 
   Object.entries(userNeeds).forEach(([size, quantity]) => {
     ItemsArray.push({
+      name: name,
       product: id,
       size: size,
       quantity: quantity,
