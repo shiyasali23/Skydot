@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./CheckoutPage.css";
-import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import { guestContext } from "../../Contexts/GuestContext";
 import { orderContext } from "../../Contexts/OrderContext";
 import { checkoutContext } from "../../Contexts/CheckoutContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
   const { registerGuest } = useContext(guestContext);
   const { orderInfo } = useContext(orderContext);
-  const {ItemsArray, checkoutObj} = useContext(checkoutContext)
+  const { ItemsArray, checkoutObj } = useContext(checkoutContext);
   const [isWhatsapp, setIsWhatsapp] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,22 +18,29 @@ const CheckoutPage = () => {
   const [pincode, setPincode] = useState("");
   const [address, setAddress] = useState("");
   const totalPrice = checkoutObj?.checkoutInfo?.totalPrice || 0;
-  const checkoutLength = checkoutObj?.checkoutItems?.length
-  const navigate = useNavigate() 
-  
-  useEffect(()=>{
-    if (!checkoutLength) {
-      navigate('/cart')
-    }
-  },[checkoutLength,navigate])
+  const checkoutLength = checkoutObj?.checkoutItems?.length;
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (!checkoutLength) {
+      navigate("/cart");
+    }
+  }, [checkoutLength, navigate]);
+
+  const handleGuestFormSubmit = (e) => {
+    e.preventDefault()
     registerGuest(name, email, phonenumber, city, pincode, address, isWhatsapp);
   };
 
+  const handleCouponSubmit = (e)=>{
+    e.preventDefault()
+  }
+
   return (
     <div className="checkout-page">
-      <Header />
+      <Link to="/store" style={{ textDecoration: "none", color: "" }}>
+        <h1 className="checkout-header">SKYDOT</h1>
+      </Link>
 
       <div className="checkout-page-container">
         <div className="checkout-left">
@@ -49,8 +55,13 @@ const CheckoutPage = () => {
             </p>
           </div>
 
-          <form className="checkout-form">
+          <form
+            className="checkout-form"
+            id="guest-form"
+            onSubmit={handleGuestFormSubmit}
+          >
             <input
+              required
               name="name"
               type="text"
               placeholder="Name"
@@ -60,6 +71,7 @@ const CheckoutPage = () => {
             />
 
             <input
+              required
               name="email"
               type="email"
               placeholder="Email"
@@ -69,6 +81,7 @@ const CheckoutPage = () => {
             />
 
             <input
+              required
               name="phonenumber"
               type="number"
               placeholder="Phone number"
@@ -87,6 +100,7 @@ const CheckoutPage = () => {
             />
 
             <input
+              required
               name="pincode"
               type="number"
               placeholder="Pincode"
@@ -96,6 +110,7 @@ const CheckoutPage = () => {
             />
 
             <input
+              required
               name="address"
               type="text"
               placeholder="Address"
@@ -119,52 +134,57 @@ const CheckoutPage = () => {
         <div className="checkout-right">
           <div className="checkout-right-top">
             <div className="checkout-info">
-            <form action="" className="checkout-coupon-form">
-              <input
-                type="text"
-                placeholder="Coupon Code"
-                className="checkout-coupon-input"
-              />
-              <button type="submit" className="checkout-coupon-submit">
-                Apply
-              </button>
-            </form>
+              <form action="" className="checkout-coupon-form" id="checkout-coupon-form" onSubmit={handleCouponSubmit}>
+                <input
+                  type="text"
+                  placeholder="Coupon Code"
+                  className="checkout-coupon-input"
+                />
+                <button type="submit" className="checkout-coupon-submit" form="checkout-coupon-form">
+                  Apply
+                </button>
+              </form>
 
-            <div className="checkout-products">
-              
-              {ItemsArray.map((item, i)=>(
-                <div key={i} className="checkout-product-info">
-                <h5 key={`${i}${item.name}`} className="product-info-value">{item.name}</h5>
-                <h6 key={`${i}${item.size}`}  className="product-info-value">{item.size}</h6>
-                <h6 key={`${i}${item.quantity}`} className="product-info-value">{item.quantity}</h6>
+              <div className="checkout-products">
+                {ItemsArray.map((item, i) => (
+                  <div key={i} className="checkout-product-info">
+                    <h5 key={`${i}${item.name}`} className="product-info-value">
+                      {item.name}
+                    </h5>
+                    <h6 key={`${i}${item.size}`} className="product-info-value">
+                      {item.size}
+                    </h6>
+                    <h6
+                      key={`${i}${item.quantity}`}
+                      className="product-info-value"
+                    >
+                      {item.quantity}
+                    </h6>
+                  </div>
+                ))}
               </div>
-              ))}
-            
-            </div>
 
-            <div className="checkout-details">
-              <h5 className="checkout-details-head">Coupon Discount</h5>
-              <h6 className="checkout-details-value">- $0</h6>
-            </div>
+              <div className="checkout-details">
+                <h5 className="checkout-details-head">Coupon Discount</h5>
+                <h6 className="checkout-details-value">- $0</h6>
+              </div>
 
-            <div className="checkout-details">
-              <h5 className="checkout-details-head">Shipping price</h5>
-              <h6 className="checkout-details-value">$0</h6>
-            </div>
-            <div className="checkout-details">
-              <h5 className="checkout-details-head">Total Price</h5>
-              <h6 className="checkout-details-value">${totalPrice}</h6>
-            </div>
+              <div className="checkout-details">
+                <h5 className="checkout-details-head">Shipping price</h5>
+                <h6 className="checkout-details-value">$0</h6>
+              </div>
+              <div className="checkout-details">
+                <h5 className="checkout-details-head">Total Price</h5>
+                <h6 className="checkout-details-value">${totalPrice}</h6>
+              </div>
             </div>
           </div>
           <div className="checkout-right-bottom">
             <button
               type="submit"
               className="checkout-buy-button"
-              onClick={handleSubmit}
-            >
-              Buy
-            </button>
+              form="guest-form"
+            >Buy</button>
           </div>
         </div>
       </div>

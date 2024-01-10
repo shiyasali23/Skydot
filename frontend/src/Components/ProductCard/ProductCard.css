@@ -5,10 +5,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  box-shadow: rgba(0, 0, 0, 0.1) 0 0 1px, rgba(0, 0, 0, 0.08) 0 0 1px,
-    rgba(0, 0, 0, 0.06) 0 0 1px;
   border: 0.5px solid #d4a3732b;
-  margin-top: 60px;
+  margin-top: 40px;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 }

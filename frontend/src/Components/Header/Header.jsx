@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <div className="navbar" >
       <div className="nav-container">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/store" style={{ textDecoration: "none" }}>
           <h1 className="nav-logo">SKYDOT</h1>
         </Link>
 

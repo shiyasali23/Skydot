@@ -30,18 +30,39 @@ class RegisterGuestSerializer(serializers.ModelSerializer):
 class GuestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guest
-        fields = '__all__'
+        fields = ['name','email','phone_number','city','address','pincode',]
 
 
 # --------------------Order-------------------------------
 
 
 
+# class OrderItemSerializer(serializers.ModelSerializer):
+#     product_name = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = OrderItem
+#         fields = [ 'product_name', 'product_id','id','product', 'size', 'quantity',]
+
+#     def get_product_name(self, obj):
+#         return obj.product.name if obj.product else None
+    
+
+
 class OrderItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.SerializerMethodField()
+    product_image = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
-        fields = [ 'product_id','id','product', 'size', 'quantity',]
+        fields = [ 'product_name', 'product_id','product_image','id','product', 'size', 'quantity',]
+
+    def get_product_name(self, obj):
+        return obj.product.name if obj.product else None
+    
+    def get_product_image(self, obj):
+        return str(obj.product.main_image) if obj.product else None
+
 
 
 
@@ -86,9 +107,11 @@ class OrderRegisterSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    owner_details = GuestSerializer(source='owner', read_only=True)
+    order_items = OrderItemSerializer(many=True, read_only=True)
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['owner_details','order_items','total_price','payment_method','isDelivered','deliveredAt','status','tracking_id','created']
 # -------------------Subscriber--------------------------
 
 class RegisterSubscriberSerializer(serializers.ModelSerializer):

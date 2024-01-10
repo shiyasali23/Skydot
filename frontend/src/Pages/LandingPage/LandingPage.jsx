@@ -10,7 +10,7 @@ const LandingPage = () => {
   return (
     <div className='landingpage'>
       <div className="clip-container clip-container-top">
-      <Link style={{textDecoration:'none', cursor:'pointer'}} to='/home'><h1 className='clip-logo'>SKYDOT.com</h1></Link>
+      <Link style={{textDecoration:'none', cursor:'pointer'}} to='/store'><h1 className='clip-logo'>SKYDOT.com</h1></Link>
 
       
         <video className='clip' autoPlay muted loop>

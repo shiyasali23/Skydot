@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import "./BasketContaier.css";
+import "./BasketCard.css";
 import { cartContext } from "../../Contexts/CartContext";
 
 const BasketContainer = ({ id, size }) => {

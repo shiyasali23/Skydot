@@ -7,6 +7,8 @@ from django.db import IntegrityError
 
 from main.serializers import *
 from main.models import Order, OrderItem
+import traceback
+
 
 
 
@@ -42,7 +44,7 @@ def registerOrder(request):
                 return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             data = {
-                'message':'Registration Success',
+                'message':'Order Created',
                 'data' : serializer.data
             }
             print(data)
@@ -50,7 +52,23 @@ def registerOrder(request):
 
     except Exception as generic_error:
         print(4,generic_error)
+        traceback.print_exc()
         return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['GET'])
+def getOrder(request, pk):
+    try:
+        order = Order.objects.get(tracking_id=pk)
+        serialized_order = OrderSerializer(order)
+        return Response(serialized_order.data, status=status.HTTP_200_OK)
+    except Order.DoesNotExist as e:
+        print(e)
+        return Response({"error": "Tracking Id not valid"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(e)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -59,11 +77,7 @@ def getOrders(request):
     serialized_orders = OrderSerializer(orders, many=True)
     return Response(serialized_orders.data)
 
-@api_view(['GET'])
-def getOrder(request, pk):
-    order = Order.objects.get(id=pk)
-    serialized_order = OrderSerializer(order)
-    return Response(serialized_order.data)
+
 
 
 

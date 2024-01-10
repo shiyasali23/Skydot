@@ -2,9 +2,10 @@
 .store-container{
     width: 90%;
     margin: 0px 5%;
-    height: 100%;
+    min-height: 480px;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-around;
     gap: 50px;
     margin-bottom: 100px;

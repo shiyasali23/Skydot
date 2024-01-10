@@ -1,3 +1,17 @@
+.checkout-header{
+  width: 90%;
+  margin: 0px 5%;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 0.5px solid #d4a373;
+  letter-spacing: 8px;
+  font-size: 35px;
+  font-weight: 600;
+  color: #404838;
+}
+
 .checkout-page-container {
   width: 90%;
   margin: 0px 5%;
@@ -222,6 +236,8 @@ padding: 0px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0px 10px;
+
 }
 
 .checkout-details-head{
@@ -297,6 +313,12 @@ padding: 0px 10px;
 }
 
 @media screen and (max-width: 768px) {
+
+  .checkout-header {
+    height: 75px;
+    font-size: 20px;
+  }
+
   .checkout-page-container {
     height: 540px;
   }
@@ -311,7 +333,7 @@ padding: 0px 10px;
  
 
   .checkout-input-whatsapp{
-    width: 90%;
+    width: 85%;
     margin: 0;
   }
   .checkout-info{

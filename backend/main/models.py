@@ -89,7 +89,7 @@ class Order(models.Model):
     isDelivered = models.BooleanField(default=False)
     deliveredAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Processing', null=False, blank=False)
-    tracking_id = models.CharField(max_length=20, null=False, blank=False,unique=True)
+    tracking_id = models.CharField(max_length=20, null=False, blank=False)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         order = f"{str(self.tracking_id)}-{str(self.owner)}"

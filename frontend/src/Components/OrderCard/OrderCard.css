@@ -1,0 +1,114 @@
+.order-card{
+    width: 75%;
+    margin-top: 80px;
+    /* border: 1px solid black; */
+    
+}
+
+.order-card-top{
+    width: 100%;
+    height: 270px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid black; */
+    margin-bottom: 15px;
+    padding: 35px 35px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 3px, rgba(0, 0, 0, 0.08) 0 0 6px,
+    rgba(0, 0, 0, 0.06) 0 0 9px;
+}
+
+
+.order-card-top-left{
+    /* border: 1px solid black; */
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.order-card-top-right{
+    /* border: 1px solid black; */
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: space-between;
+
+}
+
+.order-owner-details{
+    width: 100%;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    /* border: 1px solid black; */
+}
+
+.order-details{
+    font-size: 14px;
+    letter-spacing: 1px;
+    width: 100%;
+    height: 17px;
+    display: flex;
+    justify-content: end;
+    font-weight: 600;
+    /* border: 1px solid black; */
+}
+
+.order-card-bottom{
+    width: 100%; 
+    position: relative;
+    /* border: 1px solid black; */
+}
+
+.order-items-container{
+    width: 80%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid black; */   
+}
+
+.order-item-details{
+    width: 30%;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    /* border: 1px solid black; */
+}
+
+.order-cancel-button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    outline: none;
+    border: 0.5px solid gray;
+    width: 110px;
+    height: 50px;
+    color: red;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .order-card{
+        width: 95%;
+        margin-top: 0px;
+
+    }
+
+    .order-card-top{
+        padding: 15px 15px;
+    }
+}
+
+
+
