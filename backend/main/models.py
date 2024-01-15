@@ -125,6 +125,7 @@ class OrderItem(models.Model):
 #     'email':email,
 #     'pincode':pincode,
 #     'address':address,
+
 #     'taxPrice':taxPrice,
 #     'shippingPrice':shippingPrice,
 #     'totalPrice':totalPrice,

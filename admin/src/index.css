@@ -1,7 +1,11 @@
 
-@import './assets/LoginPage.css';
-@import './assets/NavBar.css';
-@import './assets/HomePage.css';
+@import './Components//Assets/LoginPage.css';
+@import './Components/Assets/Navbar.css';
+@import './Pages/Assets/ProductsPage.css';
+@import './Pages/Assets/AddProducts.css';
+@import './Pages/Assets/OrdersPage.css';
+@import './Pages/Assets/ManageOrders.css';
+@import './Pages/Assets/EditProduct.css';
 
 * {
   margin: 0;

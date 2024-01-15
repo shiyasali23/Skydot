@@ -1,8 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './assets/bootstrap.min.css'
+import './bootstrap.min.css'
 
 import LoginPage from "./Pages/LoginPage";
-import Homepage from "./Pages/Homepage";
+import ProductsPage from "./Pages/Productspage";
+import OrdersPage from "./Pages/OrdersPage";
+import AddProductsPage from "./Pages/AddProductsPage";
+import ManageOrders from "./Pages/ManageOrders";
+import DashboardPage from "./Pages/DashboardPage";
+import EditProductPage from "./Pages/EditProductPage";
 
 function App() {
   return (
@@ -10,7 +15,13 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<OrdersPage />} />
+            <Route path="/add-orders" element={<ManageOrders />} />
+
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/add-products" element={<AddProductsPage />} />
+            <Route path="/edit-product" element={<EditProductPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
 
           </Routes>
         </BrowserRouter>

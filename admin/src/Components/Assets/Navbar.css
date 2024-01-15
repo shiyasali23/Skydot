@@ -5,23 +5,23 @@
   height: 20vh;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   border-bottom: 0.5px solid black;
 }
 
 .nav-logo {
-  width: 50%;
+  width: 40%;
   height: 100%;
   display: flex;
   align-items: center;
-  /* border: 1px solid black; */
   font-size: 30px;
   font-weight: 800;
   letter-spacing: 8px;
+  /* border: 1px solid black; */
 }
 
 .nav-list {
-  width: 50%;
+  width: 60%;
   height: 100%;
   display: flex;
   align-items: center;

@@ -1,0 +1,76 @@
+.orders-header {
+  width: 90%;
+  height: 5vh;
+  margin: 20px auto;
+  /* border: 1px solid black; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.orders-header-value {
+  width: 125px;
+  font-size: 12px;
+  font-weight: 800;
+  /* border: 1px solid black; */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+
+
+.orders-container {
+  height: 70vh;
+  width: 95vw;
+  margin: 0px auto;
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  -webkit-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.orders-card {
+  width: 95%;
+  height: 100px;
+  margin: 20px auto;
+  /* border: 1px solid black; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 5px;
+  -webkit-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.orders-card-value {
+  font-size: 15px;
+  /* border: 1px solid black; */
+  height: 100%;
+  width: 125px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+
+.orders-edit-bttn {
+  width: 115px;
+  height: 100%;
+  outline: none;
+  border: none;
+  display: flex;
+  font-size: 13px;
+  letter-spacing: 1px;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(128, 128, 128, 0.078);
+  /* border: 1px solid black; */
+}
