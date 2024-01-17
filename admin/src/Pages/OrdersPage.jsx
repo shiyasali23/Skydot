@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import NavBar from "../Components/NavBar";
 import { Link } from "react-router-dom";
-import Button from "react-bootstrap/esm/Button";
+import { ordersContext } from "../Contexts/OrdersContext";
 
 const OrdersPage = () => {
+  const { ordersArray } = useContext(ordersContext);
+
+  console.log(ordersArray);
   return (
     <div className="orders-page">
       <NavBar />
@@ -14,28 +17,39 @@ const OrdersPage = () => {
         <h5 className="orders-header-value">Name</h5>
         <h5 className="orders-header-value">City</h5>
         <h5 className="orders-header-value">Toatl Price</h5>
-        <h5 className="orders-header-value">QNt</h5>
-        <h5 className="orders-header-value">Delivery</h5>
+        <h5 className="orders-header-value">Quantity</h5>
+        <h5 className="orders-header-value">Delivered</h5>
         <h5 className="orders-header-value">Status</h5>
         <h5 className="orders-header-value">Untaken</h5>
       </div>
 
       <div className="orders-container">
-        
-        <div className="orders-card">
-          <h5 className="orders-card-value">23-03-2024</h5>
-          <h5 className="orders-card-value">9876544</h5>
-          <h5 className="orders-card-value">Shiyas</h5>
-          <h5 className="orders-card-value">Kozhikode</h5>
-          <h5 className="orders-card-value">$1300</h5>
-          <h5 className="orders-card-value">3</h5>
-          <h5 className="orders-card-value">False</h5>
-          <h5 className="orders-card-value">Prosessing</h5>
-          <Link style={{ textDecoration: "none", height: "40%" }} to="/add-orders">
-            <h5 className="orders-edit-bttn">Edit</h5>
-          </Link>
-        </div>
-      
+        {ordersArray.map((order) => (
+          <div className="orders-card">
+            <h5 className="orders-card-value">
+              {new Date(order.created).toISOString().split('T')[0]}
+            </h5>
+            <h5 className="orders-card-value">{order.owner_details.tracking_id}</h5>
+            <h5 className="orders-card-value">{order.owner_details.name}</h5>
+            <h5 className="orders-card-value">{order.owner_details.city}</h5>
+            <h5 className="orders-card-value">${order.total_price}</h5>
+            <h5 className="orders-card-value">3</h5>
+            <h5 className="orders-card-value">False</h5>
+            <h5 className="orders-card-value">{order.status}</h5>
+            <Link
+              style={{
+                textDecoration: "none",
+                height: "40%",
+                width: "125px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+              to={`/manage-orders/${order.id}`}
+            >
+              <h5 className="orders-edit-bttn">Edit</h5>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );

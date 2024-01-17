@@ -111,7 +111,7 @@ class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True, read_only=True)
     class Meta:
         model = Order
-        fields = ['owner_details','order_items','total_price','payment_method','isDelivered','deliveredAt','status','tracking_id','created']
+        fields = ['id','owner_details','order_items','shipping_price','total_price','payment_method','isDelivered','deliveredAt','status','tracking_id','created']
 # -------------------Subscriber--------------------------
 
 class RegisterSubscriberSerializer(serializers.ModelSerializer):

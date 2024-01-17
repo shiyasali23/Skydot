@@ -15,28 +15,26 @@ const AddProductsPage = () => {
             placeholder="Name"
             required
           />
-          
 
-         
-
-<textarea   style={{height:'100px'}}
+          <textarea
+            style={{ height: "100px" }}
             className="add-product-input add-product-input-large"
             name="description"
             placeholder="Description"
             required
           ></textarea>
 
-<input
+          <input
             className="add-product-input"
             type="number"
             name="price"
             placeholder="Price"
             required
           />
-         
+
           <div className="add-products-left-bottom">
             <input
-              className="add-product-input"
+              className="add-product-image-input"
               type="file"
               name="mainImage"
               accept="image/*"
@@ -45,7 +43,7 @@ const AddProductsPage = () => {
             />
 
             <input
-              className="add-product-input"
+              className="add-product-image-input"
               type="file"
               id="subImage1"
               name="subImage1"
@@ -55,7 +53,7 @@ const AddProductsPage = () => {
             />
 
             <input
-              className="add-product-input"
+              className="add-product-image-input"
               type="file"
               id="subImage2"
               name="subImage2"
@@ -65,7 +63,7 @@ const AddProductsPage = () => {
             />
 
             <input
-              className="add-product-input"
+              className="add-product-image-input"
               type="file"
               id="subImage3"
               name="subImage3"
@@ -149,11 +147,9 @@ const AddProductsPage = () => {
               <option value="unisex">Unisex</option>
             </select>
             <button className="save-product-button" type="submit">
-            Save
-          </button>
+              Save
+            </button>
           </div>
-
-         
         </div>
       </form>
     </div>

@@ -62,7 +62,7 @@
 
 
 .orders-edit-bttn {
-  width: 115px;
+  width: 85px;
   height: 100%;
   outline: none;
   border: none;
@@ -71,6 +71,7 @@
   letter-spacing: 1px;
   align-items: center;
   justify-content: center;
-  background-color: rgba(128, 128, 128, 0.078);
+  background-color: black;
+  color: white;
   /* border: 1px solid black; */
 }

@@ -6,7 +6,7 @@ const NavBar = () => {
   return (
     <div className="nav-bar">
       <h1 className="nav-logo">
-        Skydot <span style={{fontSize:'15px',letterSpacing:'6px'}}></span>
+        Skydot-admin <span style={{fontSize:'15px',letterSpacing:'6px'}}></span>
       </h1>
       <div className="nav-list">
         
@@ -24,7 +24,7 @@ const NavBar = () => {
        
         <Link style={{ textDecoration: "none" }} to="/notification">
         <i className="fa-solid fa-bell"></i>
-        </Link>
+        </Link> 
         
         <Link style={{ textDecoration: "none" }} to="/notification">
         <i className="fa-solid fa-right-from-bracket"></i>
