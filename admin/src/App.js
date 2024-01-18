@@ -1,13 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './bootstrap.min.css'
+import "./bootstrap.min.css";
 
 import LoginPage from "./Pages/LoginPage";
-import ProductsPage from './Pages/ProductsPage.jsx'
+import ProductsPage from "./Pages/ProductsPage.jsx";
 import OrdersPage from "./Pages/OrdersPage";
-import AddProductsPage from "./Pages/AddProductsPage";
-import ManageOrders from "./Pages/ManageOrders";
+import ManageOrders from "./Pages/ManageOrdersPage.jsx";
 import DashboardPage from "./Pages/DashboardPage";
-import EditProductPage from "./Pages/EditProductPage";
+import ManageProductPage from "./Pages/ManageProductPage";
 
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { OrdersProvider } from "./Contexts/OrdersContext.js";
@@ -15,25 +14,23 @@ import { OrdersProvider } from "./Contexts/OrdersContext.js";
 function App() {
   return (
     <div className="App">
-
       <ProductsProvider>
-      <OrdersProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<OrdersPage />} />
-            <Route path="/manage-orders/:id" element={<ManageOrders />} />
+        <OrdersProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/" element={<OrdersPage />} />
+              <Route path="/manage-orders/:id" element={<ManageOrders />} />
 
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/edit-product/:id" element={<EditProductPage />} />
-            <Route path="/add-products" element={<AddProductsPage />} />
-           
-            <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/edit-product/:id" element={<ManageProductPage />} />
+              <Route path="/add-product" element={<ManageProductPage />} />
 
-          </Routes>
-        </BrowserRouter>
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Routes>
+          </BrowserRouter>
         </OrdersProvider>
-        </ProductsProvider>
+      </ProductsProvider>
     </div>
   );
 }

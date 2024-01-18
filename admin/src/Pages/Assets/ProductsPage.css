@@ -11,17 +11,17 @@
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
 }
 .product-header {
-  width: 90%;
+  width: 88%;
   height: 5vh;
-  margin: 20px auto;
+  margin: 20px 0;
+  margin-left: 5%;
   /* border: 1px solid black; */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 10px;
 }
 .product-header-value {
-    width: 80px;
+  width: 75px;
   font-size: 12px;
   font-weight: 800;
   /* border: 1px solid black; */
@@ -30,10 +30,11 @@
   align-items: center;
   justify-content: center;
   overflow: auto;
+  margin: 0;
 }
 
 .product-add-bttn{
-  width: 80px;
+  width: 85px;
   outline: none;
   border: none;
   height: 100%;
@@ -50,13 +51,12 @@ letter-spacing: 1px;
 }
 .product-card {
   width: 95%;
-  height: 100px;
-  margin: 20px auto;
+  height: 90px;
+  margin: 10px auto;
   /* border: 1px solid black; */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0px 10px;
+ justify-content: space-around;
   -webkit-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
@@ -66,12 +66,13 @@ letter-spacing: 1px;
   font-size: 15px;
   /* border: 1px solid black; */
   height: 100%;
-  width: 80px;
+  width: 75px;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: auto;
+  margin: 0;
 }
 
 .product-card-image{
@@ -81,17 +82,15 @@ letter-spacing: 1px;
 
 }
 .product-card-name{
-    width: 170px;
+    width: 410px;
     /* border: 1px solid black; */
 
 }
 
 .product-edit-bttn{
   /* border: 1px solid black; */
-  width: 85px;
-  height: 100%;
-  outline: none;
-  border: none;
+  width: 90%;
+  height: 40%;
   display: flex;
   font-size: 13px;
   letter-spacing: 1px;
@@ -99,4 +98,17 @@ letter-spacing: 1px;
   justify-content: center;
   background-color: black;
   color: white;
+  margin: 0;
+}
+.product-delete-bttn{
+    /* border: 1px solid black; */
+    width: 35px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin: 0;
+    cursor: pointer;
+    
 }

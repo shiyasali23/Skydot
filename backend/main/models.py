@@ -49,7 +49,7 @@ class Product(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=200, null=False, blank=False)
     description = models.TextField(max_length=2000, null=False, blank=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+    price = models.DecimalField(max_digits=10, decimal_places=1, null=False, blank=False)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=False, blank=False)
     created = models.DateTimeField(auto_now_add=True)

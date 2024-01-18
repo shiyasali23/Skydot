@@ -5,18 +5,44 @@ import { productsContext } from "../Contexts/ProductsContext";
 
 const EditProductPage = () => {
   const { id } = useParams();
-  const { productsArray, updateProduct } = useContext(productsContext);
-  const [product, setProduct] = useState( productsArray.find((product) => product.id === id) );
+  const { productsArray, updateProduct, registerProduct } = useContext(productsContext);
+  
+  const [product, setProduct] = useState(
+    id
+      ? productsArray.find((product) => product.id === id)
+      : {
+          name: '',
+          description: '',
+          price: '',
+          main_image: '',
+          sub_image_1: '',
+          sub_image_2: '',
+          sub_image_3: '',
+          stock_XS: '',
+          stock_S: '',
+          stock_M: '',
+          stock_L: '',
+          stock_XL: '',
+          category: '',
+          gender: '',
+        }
+  );
 
   useEffect(() => {
-    setProduct(productsArray.find((product) => product.id === id));
-  },[productsArray, id]);
-  
+    setProduct(id ? productsArray.find((product) => product.id === id) : null);
+  }, [productsArray, id]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateProduct(product);
+  
+    if (id) {
+      updateProduct(product);
+    } else {
+      registerProduct(product);
+    }
   };
 
+  console.log(product);
   return (
     <div className="edit-product-page">
       <NavBar />
@@ -30,10 +56,10 @@ const EditProductPage = () => {
               type="text"
               name="name"
               placeholder="Name"
-              value={product?.name ?? ''}
+              value={product?.name ?? ""}
               onChange={(e) =>
-                setProduct((prevProduct) => ({
-                  ...prevProduct,
+                setProduct((product) => ({
+                  ...product,
                   name: e.target.value,
                 }))
               }
@@ -47,7 +73,7 @@ const EditProductPage = () => {
               className="edit-product-input edit-product-input-large"
               name="description"
               placeholder="Description"
-              value={product?.description?? ''}
+              value={product?.description ?? ""}
               onChange={(e) =>
                 setProduct({
                   ...product,
@@ -132,7 +158,7 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock XS"
               name="stock_XS"
-              value={product?.stock_XS??''}
+              value={product?.stock_XS ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, stock_XS: e.target.value })
               }
@@ -146,7 +172,7 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock S"
               name="stock_S"
-              value={product?.stock_S ?? ''}
+              value={product?.stock_S ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, stock_S: e.target.value })
               }
@@ -160,7 +186,7 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock M"
               name="stockM"
-              value={product?.stock_M ?? ''}
+              value={product?.stock_M ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, stock_M: e.target.value })
               }
@@ -174,7 +200,7 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock L"
               name="stock_L"
-              value={product?.stock_L ?? ''}
+              value={product?.stock_L ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, stock_L: e.target.value })
               }
@@ -188,7 +214,7 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock XL"
               name="stock_XL"
-              value={product?.stock_XL??''}
+              value={product?.stock_XL ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, stock_XL: e.target.value })
               }
@@ -202,7 +228,7 @@ const EditProductPage = () => {
               type="number"
               name="price"
               placeholder="Price"
-              value={product?.price?? ''}
+              value={product?.price ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, price: e.target.value })
               }
@@ -216,7 +242,7 @@ const EditProductPage = () => {
               id="category"
               name="category"
               placeholder="Category"
-              value={product?.category??''}
+              value={product?.category ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, category: e.target.value })
               }
@@ -233,7 +259,7 @@ const EditProductPage = () => {
               className="edit-product-select"
               id="gender"
               name="gender"
-              value={product?.gender?? ''}
+              value={product?.gender ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, gender: e.target.value })
               }
@@ -246,7 +272,8 @@ const EditProductPage = () => {
           <button
             className="save-edit-product-button"
             type="submit"
-            onClick={handleSubmit}>
+            onClick={handleSubmit}
+          >
             Save
           </button>
         </div>
@@ -256,18 +283,3 @@ const EditProductPage = () => {
 };
 
 export default EditProductPage;
-
-// const [name, setName] = useState(selectedProduct?.name);
-// const [description, setDescription] = useState(selectedProduct?.description);
-// const [price, setPrice] = useState(selectedProduct?.price);
-// const [main_image, setMain_image] = useState(selectedProduct?.main_image);
-// const [sub_image_1, setSubImage_1] = useState(selectedProduct?.sub_image_1);
-// const [sub_image_2, setSubImage_2] = useState(selectedProduct?.sub_image_2);
-// const [sub_image_3, setSubImage_3] = useState(selectedProduct?.sub_image_3);
-// const [stock_XS, setStock_XS] = useState(selectedProduct?.stock_XS);
-// const [stock_S, setStock_S] = useState(selectedProduct?.stock_S);
-// const [stock_M, setStock_M] = useState(selectedProduct?.stock_M);
-// const [stock_L, setStock_L] = useState(selectedProduct?.stock_L);
-// const [stock_XL, setStock_XL] = useState(selectedProduct?.stock_XL);
-// const [category, setCategory] = useState(selectedProduct?.category);
-// const [gender, setGender] = useState(selectedProduct?.gender);

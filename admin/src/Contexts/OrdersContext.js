@@ -22,9 +22,9 @@ export const OrdersProvider = ({ children }) => {
     
     fetchorders();
   }, []);
-
-  const updateOrder = ()=>{
-    console.log('hi');
+console.log(ordersArray);
+  const updateOrder = (order)=>{
+    console.log('hi',order);
   }
 
 

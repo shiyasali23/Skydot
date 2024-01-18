@@ -1,7 +1,8 @@
 .orders-header {
-  width: 90%;
+  width: 80%;
   height: 5vh;
-  margin: 20px auto;
+  margin: 20px 0px;
+  margin-left: 2.5%;
   /* border: 1px solid black; */
   display: flex;
   align-items: center;
@@ -17,13 +18,14 @@
   align-items: center;
   justify-content: center;
   overflow: auto;
+  margin: 0;
 }
 
 
 
 .orders-container {
   height: 70vh;
-  width: 95vw;
+  width: 100%;
   margin: 0px auto;
   /* border: 1px solid black; */
   display: flex;
@@ -42,14 +44,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 5px;
   -webkit-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   -moz-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
+
 .orders-card-value {
-  font-size: 15px;
+  font-size: 13px;
   /* border: 1px solid black; */
   height: 100%;
   width: 125px;
@@ -58,11 +60,12 @@
   align-items: center;
   justify-content: center;
   overflow: auto;
+  margin: 0;
 }
 
 
 .orders-edit-bttn {
-  width: 85px;
+  width: 85%;
   height: 100%;
   outline: none;
   border: none;

@@ -24,12 +24,19 @@ export const ProductsProvider = ({ children }) => {
   }, []);
 
   const updateProduct = async (editedProduct ) => {
-    console.log('up',editedProduct);
+    console.log('up');
   };
+  const registerProduct = async (product ) => {
+    console.log('up');
+  };
+  const deleteProduct = async (id ) => {
+    console.log(id);
+  };
+  
 
 
   return (
-    <productsContext.Provider value={{ productsArray:productsArray, loading:loading, updateProduct:updateProduct }}>
+    <productsContext.Provider value={{ productsArray:productsArray, loading:loading, updateProduct:updateProduct, registerProduct:registerProduct, deleteProduct:deleteProduct }}>
       {children}
     </productsContext.Provider>
   );
