@@ -4,19 +4,16 @@ from rest_framework.decorators import api_view
 
 from django.db import IntegrityError
 
-from main.serializers import SubscriberSerializer, RegisterSubscriberSerializer
-
-from main.models import Subscriber
-
-
+from main.serializers import *
+from main.models import Customer
 
 
 
 @api_view(['POST'])
-def registerSubscriber(request):
+def registerCustomer(request):
     try:
         if request.method == 'POST':
-            serializer = RegisterSubscriberSerializer(data=request.data)
+            serializer = RegisterCustomerSerializer(data=request.data)
 
             try:
                 serializer.is_valid(raise_exception=True)
@@ -30,11 +27,11 @@ def registerSubscriber(request):
                 print(2,save_error)
                 return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            report = {
+            data = {
                 'message':'Registration Success',
                 'data' : serializer.data
             }
-            return Response(report, status=status.HTTP_201_CREATED)
+            return Response(data, status=status.HTTP_201_CREATED)
 
     except Exception as generic_error:
         print(3,generic_error)
@@ -44,13 +41,13 @@ def registerSubscriber(request):
 
 
 @api_view(['GET'])
-def getSubscribers(request):
-    subscribers = Subscriber.objects.all()
-    serialized_subscribers = SubscriberSerializer(subscribers, many=True)
-    return Response(serialized_subscribers.data)
+def getCustomers(request):
+    customers = customer.objects.all()
+    serialized_customers = CustomerSerializer(customers, many=True)
+    return Response(serialized_customers.data)
 
 @api_view(['GET'])
-def getSubscriber(request, pk):
-    subscriber = Subscriber.objects.get(id=pk)
-    serialized_subscriber = SubscriberSerializer(subscriber)
-    return Response(serialized_subscriber.data)
+def getCustomer(request, pk):
+    customer = Customer.objects.get(id=pk)
+    serialized_customer = CustomerSerializer(customer)
+    return Response(serialized_customer.data)

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
-    'main.apps.MainConfig'
+    'frontend.apps.FrontendConfig'
+    'admin.apps.AdminConfig'
     
 
 
