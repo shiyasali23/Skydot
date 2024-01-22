@@ -116,9 +116,9 @@ def createOrder(request):
 
 
 @api_view(['PUT'])
-def updateOrder(request, order_id):
+def updateOrder(request, pk):
     try:
-        order = Order.objects.get(id=order_id)
+        order = Order.objects.get(id=pk)
 
         if request.method in ['PUT']:
             serializer = OrderSerializer(order, data=request.data, partial=True)
@@ -216,7 +216,6 @@ def createReview(request):
 
 @api_view(['GET'])
 def getReviews(request):
-
     try:
         reviews = Review.objects.all()
         serialized_reviews = CreateReviewSerializer(reviews, many=True)
@@ -232,6 +231,7 @@ def getReview(request, pk):
         serialized_review = CreateReviewSerializer(review)
         return Response(serialized_review.data, status=status.HTTP_200_OK)
     except Review.DoesNotExist:
+        print(Review.DoesNotExist)
         return Response({'error': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -282,6 +282,13 @@ def getSubscribers(request):
 
 @api_view(['GET'])
 def getSubscriber(request, pk):
-    subscriber = Guest.objects.get(id=pk)
-    serialized_subscriber = SubscriberSerializer(subscriber)
-    return Response(serialized_subscriber.data)
+    try:
+        subscriber = Guest.objects.get(id=pk)
+        serialized_subscriber = SubscriberSerializer(subscriber)
+        return Response(serialized_subscriber.data,status=status.HTTP_200_OK)
+    except Subscriber.DoesNotExist:
+        print(Subscriber.DoesNotExist)
+        return Response({'error': 'Subscriber not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

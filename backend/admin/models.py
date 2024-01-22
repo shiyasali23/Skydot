@@ -22,8 +22,6 @@ class Product(models.Model):
     TAG_CHOICES = [
         ('featured', 'Featured'),
         ('new-arrival', 'New Arrival'),
-        ('new-arrival', 'New Arrival'),
-        ('up-comming', 'UP Comming'),
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
@@ -33,6 +31,7 @@ class Product(models.Model):
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=False, blank=False)
     tag = models.CharField(max_length=10, choices=TAG_CHOICES, null=False, blank=False)
+    vote = models.IntegerField(max_digits=3,default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     out_of_stock = models.BooleanField(default=False)
 
@@ -43,15 +42,16 @@ class Product(models.Model):
 class Stock(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='stock')
-    stock_XS = models.IntegerField(default=0)
-    stock_S = models.IntegerField(default=0)
-    stock_M = models.IntegerField(default=0)
-    stock_L = models.IntegerField(default=0)
-    stock_XL = models.IntegerField(default=0)
-    created = models.DateTimeField(auto_now_add=True)
+    stock_XS = models.IntegerField(default=0,null=False, blank=False)
+    stock_S = models.IntegerField(default=0,null=False, blank=False)
+    stock_M = models.IntegerField(default=0,null=False, blank=False)
+    stock_L = models.IntegerField(default=0,null=False, blank=False)
+    stock_XL = models.IntegerField(default=0,null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True,null=False, blank=False)
 
     def __str__(self):
         return self.product
+
 
 class ProductImage(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
@@ -67,11 +67,10 @@ class ProductImage(models.Model):
 
 
 
-
 class Notification(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
         return self.body
@@ -80,7 +79,7 @@ class Letter(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
     receiver = models.ManyToManyField (Subscriber, on_delete=models.SET_NULL, null=False, blank=False, related_name='letters_received')
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
         return self.body

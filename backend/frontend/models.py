@@ -1,6 +1,6 @@
 import shortuuid
 from django.db import models
-
+from admin.models import Product
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
@@ -21,9 +21,6 @@ class Customer(models.Model):
 
 
 
-
-
-
 class Order(models.Model):   
     STATUS_CHOICES = [
         ('processing', 'Processing'),
@@ -35,7 +32,7 @@ class Order(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=False) 
+    owner = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=False, blank=False) 
     tax_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
     shipping_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
     total_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
@@ -55,7 +52,8 @@ class Order(models.Model):
         ordering = ['-created']
 
 
-class OrderItem(models.Model):
+
+class OrderProduct(models.Model):
     SIZE_CHOICES = [
         ('XS', 'XS'),
         ('S', 'S'),
@@ -64,8 +62,9 @@ class OrderItem(models.Model):
         ('XL', 'XL'),
     ]
 
+
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False, related_name='order_items')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False, related_name='order_product')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=1)
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=False, blank=False)
@@ -88,13 +87,14 @@ class Review(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False, related_name='order_reviews')
+    orderProduct = models.ForeignKey(OrderProduct, on_delete=models.CASCADE, null=False, blank=False, related_name='order_reviews')
     body = models.TextField(max_length=2000, null=True, blank=True)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.body
+
 
 
 class Subscriber(models.Model):
