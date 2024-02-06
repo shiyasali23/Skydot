@@ -4,8 +4,6 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-from frontend.models import Subscriber
-
 class Product(models.Model):
     CATEGORY_CHOICES = [
         ('shirt', 'Shirt'),
@@ -30,13 +28,33 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=1, null=False, blank=False)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=False, blank=False)
-    tag = models.CharField(max_length=10, choices=TAG_CHOICES, null=False, blank=False)
-    vote = models.IntegerField(max_digits=3,default=0, null=True, blank=True)
+    tag = models.CharField(max_length=11, choices=TAG_CHOICES, null=True, blank=False)
+    vote = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     out_of_stock = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
+def updateOutofStock(self):
+        try:
+            if all([
+                self.stock.stock_XS == 0,
+                self.stock.stock_S == 0,
+                self.stock.stock_M == 0,
+                self.stock.stock_L == 0,
+                self.stock.stock_XL == 0
+            ]):
+                self.out_of_stock = True
+            else:
+                self.out_of_stock = False
+            self.save()
+        except Exception as e:
+            print(e)
+
+
+
+
 
 
 class Stock(models.Model):
@@ -50,7 +68,7 @@ class Stock(models.Model):
     created = models.DateTimeField(auto_now_add=True,null=False, blank=False)
 
     def __str__(self):
-        return self.product
+        return self.product.name
 
 
 class ProductImage(models.Model):
@@ -63,13 +81,14 @@ class ProductImage(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.product
+        return self.product.name
 
 
 
 class Notification(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
+    seen = models.BooleanField(default=False,null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
@@ -78,7 +97,7 @@ class Notification(models.Model):
 class Letter(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
-    receiver = models.ManyToManyField (Subscriber, on_delete=models.SET_NULL, null=False, blank=False, related_name='letters_received')
+    receiver = models.ManyToManyField('frontend.Subscriber', blank=False, related_name='letters')    
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):

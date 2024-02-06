@@ -1,8 +1,10 @@
 import shortuuid
 from django.db import models
-from admin.models import Product
+from adminpanel.models import Product
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist,ValidationError
+
 
 
 
@@ -32,7 +34,7 @@ class Order(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    owner = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=False, blank=False) 
+    owner = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=False) 
     tax_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
     shipping_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
     total_price = models.DecimalField(max_digits=7, decimal_places=2, null=False, blank=False)
@@ -74,6 +76,14 @@ class OrderProduct(models.Model):
     def __str__(self):
         item = f"{self.product} {self.size} {self.quantity} "
         return item
+    def save(self, *args, **kwargs):
+        if self.product and self.size:
+            stock_field = f"stock_{self.size}"
+            available_stock = getattr(self.product.stock, stock_field, 0)
+            if self.quantity > available_stock:
+                raise ValidationError(f"Insufficient stock for {self.product} ({self.size})")
+        
+        super().save(*args, **kwargs)
 
 
 
@@ -87,20 +97,21 @@ class Review(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,default='abc', related_name='reviews')
     orderProduct = models.ForeignKey(OrderProduct, on_delete=models.CASCADE, null=False, blank=False, related_name='order_reviews')
     body = models.TextField(max_length=2000, null=True, blank=True)
     rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.body
+        return self.product.name
 
 
 
 class Subscriber(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     name = models.CharField(max_length=255, null=False, blank=False)
-    phone_number = models.CharField(max_length=15, null=False, blank=False)
+    phone_number = models.CharField(max_length=15, null=False, blank=False,unique=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

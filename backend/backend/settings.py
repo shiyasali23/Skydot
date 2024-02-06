@@ -40,11 +40,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
-    'frontend.apps.FrontendConfig'
-    'admin.apps.AdminConfig'
-    
-
-
+    'frontend.apps.FrontendConfig',
+    'adminpanel.apps.AdminpanelConfig',
 ]
 
 REST_FRAMEWORK = {

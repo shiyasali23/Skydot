@@ -1,19 +1,18 @@
 from django.urls import path
-from main.views import customers_views
+from . import views
 
 
 urlpatterns = [
-    path('customer/register/', customers_views.registerCustomer, name='customer-register'),
-    path('customer/', customers_views.getCustomers, name="all-customers"),
-    path('customer/<str:pk>/', customers_views.getCustomer, name='get-customer'),
+    path('customer/create/', views.createCustomer, name='customer-create'),
+    path('customer/', views.getCustomers, name="all-customers"),
+    path('customer/<str:pk>/', views.getCustomer, name='get-customer'),
 
-    path('orders/register/', orders_views.registerOrder, name='orders-register'),
-    path('orders/', orders_views.getOrders, name='all-order'),
-    path('orders/<str:pk>/', orders_views.getOrder, name='get-order'),
-    path('orderitems/', orders_views.getOrderItems, name='get-orderitems'),
+    path('orders/create/', views.createOrder, name='orders-create'),
+    path('orders/', views.getOrders, name='all-order'),
+    path('orders/<str:pk>/', views.getOrder, name='get-order'),
 
-     path('subscribers/register/', subscribers_views.registerSubscriber, name='subscribers-register'),
-    path('subscribers/', subscribers_views.getSubscribers, name="all-subscribers"),
-    path('subscribers/<str:pk>/', subscribers_views.getSubscriber, name="subscriber"),
+     path('subscribers/create/', views.createSubscriber, name='subscribers-create'),
+    path('subscribers/', views.getSubscribers, name="all-subscribers"),
+    path('subscribers/<str:pk>/', views.getSubscriber, name="subscriber"),
 
 ]

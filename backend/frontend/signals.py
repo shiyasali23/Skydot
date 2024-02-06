@@ -1,128 +1,125 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.db.models import Sum
-from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction, IntegrityError
 
-@receiver(post_save, sender=Order)
+from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist,ValidationError
+
+from .models import Order, OrderProduct, Review, Subscriber
+
+from adminpanel.serializers import ProductSerializer, StockSerializer, LetterSerializer
+from adminpanel.models import Letter,Product,Stock, Notification
+
+from django.db.models import F
+from django.db.models import Sum
+
+
+@receiver(post_save, sender=OrderProduct)
 def updateStock(sender, instance, created, **kwargs):
     if created:
         try:
-            order_products = OrderProduct.objects.filter(order=instance) 
-            for order_product in order_products:
-                    product = order_product.product
-                    size = order_product.size
-                    quantity = order_product.quantity
-                    stock_entry = Stock.objects.get(product=product)
-                    
-                    if size == 'XS':
-                        stock_entry.stock_XS -= quantity
-                    elif size == 'S':
-                        stock_entry.stock_S -= quantity
-                    elif size == 'M':
-                        stock_entry.stock_M -= quantity
-                    elif size == 'L':
-                        stock_entry.stock_L -= quantity
-                    elif size == 'XL':
-                        stock_entry.stock_XL -= quantity
-                    
-                    stock_entry.save()
-
-                    product_data = CreateProductSerializer(product).data
-                    serializer = CreateStockSerializer(stock_entry, data=product_data, partial=True)
-                    serializer.is_valid(raise_exception=True)
-                    serializer.save()
-
+            product = instance.product
+            size = instance.size
+            quantity = instance.quantity
+            stock_data, created = Stock.objects.get_or_create(product=product)
+            stock_data.stock_XS = F('stock_XS') - quantity if size == 'XS' else F('stock_XS')
+            stock_data.stock_S = F('stock_S') - quantity if size == 'S' else F('stock_S')
+            stock_data.stock_M = F('stock_M') - quantity if size == 'M' else F('stock_M')
+            stock_data.stock_L = F('stock_L') - quantity if size == 'L' else F('stock_L')
+            stock_data.stock_XL = F('stock_XL') - quantity if size == 'XL' else F('stock_XL')
+            stock_data.save()
         except ObjectDoesNotExist as e:
-            print(f"Error updating stock: {e}")
+            print(f"Error: {e}")
+        except ValidationError as e:
+            print(f"Validation Error: {e}")
+        except IntegrityError as e:
+            print(f"Integrity Error: {e}")
         except Exception as e:
-            print(f"Error updating stock: {e}")
-
-
-@receiver(post_save, sender=Review)
-def updateProductVote(sender, instance, created, **kwargs):
-    if created:
-        try:
-            product = instance.orderProduct.product  
-            if product:
-                reviews = Review.objects.filter(orderProduct__product=product)  
-                total_reviews = reviews.count()
-                if total_reviews > 0:
-                    sum_ratings = reviews.aggregate(total_rating=Sum('rating'))['total_rating']
-                    new_vote_percentage = round((sum_ratings / (total_reviews * 5)) * 100)
-                else:
-                    new_vote_percentage = 0
-                product.vote = new_vote_percentage
-                product.save()
-
-                product_data = CreateProductSerializer(product).data
-                serializer = CreateProductSerializer(product, data=product_data, partial=True)
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-
-        except ObjectDoesNotExist as e:
-            print(f"Error updating vote_percentage: {e}")
-        except Exception as e:
-            print(f"Error updating vote_percentage: {e}")
-
-
+            print(f"Unexpected Error: {e}")
 
 
 @receiver(post_save, sender=Order)
 def createOrderLetter(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.isWhatsapp:
         try:
             owner = instance.owner
+            phone_number = owner.phone_number
+            name = owner.name
+            subscriber = Subscriber.objects.filter(phone_number=phone_number).first()
+            if not subscriber:
+                subscriber = Subscriber(name=name, phone_number=phone_number)
+                subscriber.save()
             order_tracking_id = instance.tracking_id
             letter_body = f"Thank you for your order! Your order with tracking ID {order_tracking_id} has been successfully placed."
-            letter_data = {'body': letter_body}
-            serializer = CreateLetterSerializer(data=letter_data)
-            serializer.is_valid(raise_exception=True)
-            letter = serializer.save()
-            letter.receiver.add(owner)
+            letter = Letter(body=letter_body)
+            letter.save()
+            letter.receiver.add(subscriber)
         except Exception as e:
-            print(f"Error creating letter: {e}")
-
+            print(f"Error creating order letter: {e}")
 
 
 @receiver(post_save, sender=Review)
-def updateLowReview(sender, instance, created, **kwargs):
-    try:
-        if created and instance.rating == 1:
-            owner_name = instance.orderProduct.order.owner.name
-            product_name = instance.orderProduct.product.name
-            notification_data = {'body': f"{owner_name} gave a low rating (1 star) to {product_name}."}
-            serializer = CreateNotificationSerializer(data=notification_data)
-
+def notifyLowReview(sender, instance, created, **kwargs):
+    if created and instance.rating == 1:
+        try:
+            owner = instance.orderProduct.order.owner
+            product = instance.orderProduct.product
+            review_body = instance.body
+            
+            notification_body = f"{product.name} received 1 star. "
+            notification_body += f"Review: {review_body}" if review_body else "Reason not provided."
+            notification_body += f" You can contact {owner.name} at {owner.phone_number}."
+            notification_body += f" (This product has {product.vote}% positive votes.)"
+            
+            notification_data = {
+                'body': notification_body
+            }   
             try:
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-            except serializers.ValidationError as e:
-                print(f"Validation error while creating notification: {e}")
+                Notification.objects.create(**notification_data)
             except Exception as e:
-                print(f"Error saving notification: {e}")
-
-    except Exception as e:
-        print(f"Error in updateLowReview signal: {e}")
+                print(f"Error creating notification: {e}")
+        except ObjectDoesNotExist as e:
+            print(f"Object does not exist: {e}")
+        except Exception as e:
+            print(f"Error handling low review: {e}")
 
 
 @receiver(post_save, sender=Subscriber)
 def createWelcomeLetter(sender, instance, created, **kwargs):
     if created:
         try:
-            subscriber_id = instance.id
             subscriber_name = instance.name
             letter_body = f"Hello {subscriber_name}! Thank you for subscribing. Welcome to our community."
-            letter_data = {'body': letter_body}
-            serializer = CreateLetterSerializer(data=letter_data)
-            serializer.is_valid(raise_exception=True)
-            letter = serializer.save()
-            letter.receiver.add(subscriber_id)
+            letter = Letter(body=letter_body)
+            letter.save()
+            letter.receiver.add(instance)
         except Exception as e:
             print(f"Error creating welcome letter: {e}")
 
 
+@receiver(post_save, sender=Review)
+def update_vote(sender, instance, **kwargs):
+    if sender == Review:
+        rating = instance.rating
+        product_id = instance.product.id
+        try:
+            if rating and product_id:
+                product = Product.objects.get(id=product_id)
+                total_reviews = int(product.reviews.count() * 5)
+                total_rating = int(product.reviews.aggregate(Sum('rating'))['rating__sum'])              
+                average_rating = total_rating / total_reviews
+                product.vote = int(average_rating * 100)
+                product.save()
+                print('hi')
+        except Product.DoesNotExist:
+            print("Product does not exist.")
+        except ZeroDivisionError:
+            print("Cannot calculate average rating with zero reviews.")
+        except IntegrityError as e:
+            print(f"IntegrityError: {e}")
+
+
 post_save.connect(createOrderLetter, sender=Order)
-post_save.connect(updateLowReview, sender=Review)
-post_save.connect(updateProductVote, sender=Review)
-post_save.connect(updateStock, sender=Order)
-post_save.connect(createWelcomeLetter, sender=Order)
+post_save.connect(notifyLowReview, sender=Review)
+post_save.connect(updateStock, sender=OrderProduct)
+post_save.connect(createWelcomeLetter, sender=Subscriber)

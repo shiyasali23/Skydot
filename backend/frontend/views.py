@@ -17,7 +17,7 @@ from .models import *
 def createCustomer(request):
     try:
         if request.method == 'POST':
-            serializer = RegisterCustomerSerializer(data=request.data)
+            serializer = CustomerSerializer(data=request.data)
 
             try:
                 serializer.is_valid(raise_exception=True)
@@ -77,7 +77,7 @@ def getCustomer(request, pk):
 def createOrder(request):
     try:
         if request.method == 'POST':
-            serializer = CreateOrderSerializer(data=request.data)
+            serializer = OrderSerializer(data=request.data)
 
             try:
                 serializer.is_valid(raise_exception=True)
@@ -189,7 +189,7 @@ def getOrders(request):
 def createReview(request):
     try:
         if request.method == 'POST':
-            serializer = CreateReviewSerializer(data=request.data)
+            serializer = ReviewSerializer(data=request.data)
 
             try:
                 serializer.is_valid(raise_exception=True)
@@ -218,7 +218,7 @@ def createReview(request):
 def getReviews(request):
     try:
         reviews = Review.objects.all()
-        serialized_reviews = CreateReviewSerializer(reviews, many=True)
+        serialized_reviews = ReviewSerializer(reviews, many=True)
         return Response(serialized_reviews.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -228,7 +228,7 @@ def getReviews(request):
 def getReview(request, pk):
     try:
         review = Review.objects.get(id=pk)
-        serialized_review = CreateReviewSerializer(review)
+        serialized_review = ReviewSerializer(review)
         return Response(serialized_review.data, status=status.HTTP_200_OK)
     except Review.DoesNotExist:
         print(Review.DoesNotExist)
@@ -241,10 +241,10 @@ def getReview(request, pk):
 
 
 @api_view(['POST'])
-def registerSubscriber(request):
+def createSubscriber(request):
     try:
         if request.method == 'POST':
-            serializer = RegisterSubscriberSerializer(data=request.data)
+            serializer = SubscriberSerializer(data=request.data)
 
             try:
                 serializer.is_valid(raise_exception=True)

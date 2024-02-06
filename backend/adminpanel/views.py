@@ -26,7 +26,7 @@ def createProduct(request):
                 print(2, save_error)
                 return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response("Product created", status=status.HTTP_201_CREATED)
 
     except Exception as generic_error:
         print(3, generic_error)
@@ -54,13 +54,14 @@ def updateProduct(request, product_id):
             serializer.save()
         except Exception as save_error:
             return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Product updated".data, status=status.HTTP_200_OK)
 
 @api_view(['DELETE'])
-def delete_product(request, product_id):
+def deleteProduct(request, product_id):
     try:
         product = Product.objects.get( id=product_id)
+    except Product.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
         
         stock_instance = product.stock
         stock_serializer = StockSerializer(stock_instance)
@@ -70,13 +71,8 @@ def delete_product(request, product_id):
         images_serializer = ProductImageSerializer(images_instance)
         images_serializer.delete()
 
-        # Delete the main Product instance
         product.delete()
-
-        return Response({'message': 'Product and associated data deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-    
-    except Product.DoesNotExist:
-        return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response('Product deleted', status=status.HTTP_204_NO_CONTENT)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -89,16 +85,17 @@ def getProducts(request):
     try:
         products = Product.objects.all()
         serialized_products = ProductSerializer(products, many=True)
-        return Response(serialized_products.data)
+        return Response(serialized_products.data,status=status.HTTP_200_OK)
     except Exception as deletion_error:
         return Response({'error': str(deletion_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def getProduct(request, pk):
     try:
         product = Product.objects.get(id=pk)
         serialized_product = ProductSerializer(product)
-        return Response(serialized_product.data)
+        return Response(serialized_product.data,status=status.HTTP_200_OK)
     except Product.DoesNotExist:
         return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -132,7 +129,7 @@ def getLetters(request):
     try:
         letters = Letter.objects.all()
         serialized_letters = LetterSerializer(letters, many=True)
-        return Response(serialized_letterss.data)
+        return Response(serialized_letterss.data,status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -141,7 +138,7 @@ def getLetter(request, pk):
     try:
         letter = Letter.objects.get(id=pk)
         serialized_letter = LetterSerializer(letter)
-        return Response(serialized_letter.data)
+        return Response(serialized_letter.data,status=status.HTTP_200_OK)
     except Letter.DoesNotExist:
         return Response({'error': 'Letter not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -176,7 +173,7 @@ def getNotifications(request):
     try:
         notifications = Notification.objects.all()
         serialized_notifications = NotificationSerializer(notifications, many=True)
-        return Response(serialized_notifications.data)
+        return Response(serialized_notifications.data,status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -185,7 +182,7 @@ def getNotification(request, pk):
     try:
         notification = Notification.objects.get(id=pk)
         serialized_notification = NotificationSerializer(notification)
-        return Response(serialized_notification.data)
+        return Response(serialized_notification.data, status=status.HTTP_200_OK)
     except Notification.DoesNotExist:
         return Response({'error': 'Notification not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
