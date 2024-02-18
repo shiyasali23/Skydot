@@ -14,28 +14,37 @@ from django.db.models import F
 from django.db.models import Sum
 
 
+
 @receiver(post_save, sender=OrderProduct)
 def updateStock(sender, instance, created, **kwargs):
     if created:
-        try:
-            product = instance.product
-            size = instance.size
-            quantity = instance.quantity
-            stock_data, created = Stock.objects.get_or_create(product=product)
-            stock_data.stock_XS = F('stock_XS') - quantity if size == 'XS' else F('stock_XS')
-            stock_data.stock_S = F('stock_S') - quantity if size == 'S' else F('stock_S')
-            stock_data.stock_M = F('stock_M') - quantity if size == 'M' else F('stock_M')
-            stock_data.stock_L = F('stock_L') - quantity if size == 'L' else F('stock_L')
-            stock_data.stock_XL = F('stock_XL') - quantity if size == 'XL' else F('stock_XL')
+        product = instance.product
+        size = instance.size
+        quantity = instance.quantity
+        stock_data = Stock.objects.select_for_update().get(product=product)
+        stock_data.stock_XS = F('stock_XS') - quantity if size == 'XS' else F('stock_XS')
+        stock_data.stock_S = F('stock_S') - quantity if size == 'S' else F('stock_S')
+        stock_data.stock_M = F('stock_M') - quantity if size == 'M' else F('stock_M')
+        stock_data.stock_L = F('stock_L') - quantity if size == 'L' else F('stock_L')
+        stock_data.stock_XL = F('stock_XL') - quantity if size == 'XL' else F('stock_XL')
+
+        with transaction.atomic():
             stock_data.save()
-        except ObjectDoesNotExist as e:
-            print(f"Error: {e}")
-        except ValidationError as e:
-            print(f"Validation Error: {e}")
-        except IntegrityError as e:
-            print(f"Integrity Error: {e}")
-        except Exception as e:
-            print(f"Unexpected Error: {e}")
+            
+        stock_data = Stock.objects.select_for_update().get(product=product)
+        product_data = Product.objects.select_for_update().get(id=product.id)           
+        if all([
+            stock_data.stock_XS == 0,
+            stock_data.stock_S == 0,
+            stock_data.stock_M == 0,
+            stock_data.stock_L == 0,
+            stock_data.stock_XL == 0
+        ]):
+            product_data.out_of_stock = True
+        else:
+            product_data.out_of_stock = False
+        product_data.save()
+
 
 
 @receiver(post_save, sender=Order)
@@ -110,15 +119,41 @@ def update_vote(sender, instance, **kwargs):
                 average_rating = total_rating / total_reviews
                 product.vote = int(average_rating * 100)
                 product.save()
-                print('hi')
         except Product.DoesNotExist:
             print("Product does not exist.")
         except ZeroDivisionError:
             print("Cannot calculate average rating with zero reviews.")
         except IntegrityError as e:
             print(f"IntegrityError: {e}")
+ 
+@receiver(post_save, sender=Order)           
+def updateDelivery(sender, instance, **kwargs):
+    if instance.deliveredAt and instance.isWhatsapp:
+        try:
+            owner_name = instance.owner.name
+            phone_number = instance.owner.phone_number
+            
+            subscriber = Subscriber.objects.filter(phone_number=phone_number).first()
+            if not subscriber:
+                subscriber = Subscriber(name=owner_name, phone_number=phone_number)
+                subscriber.save()
+                
+            order_tracking_id = instance.tracking_id
+            letter_body = f"Hello {owner_name}! Your order with tracking id {order_tracking_id} was delivered successfully at {instance.deliveredAt.strftime('%d-%m-%Y-%H-%M')}"
+            try:
+                letter = Letter(body=letter_body)
+                letter.save()
+                letter.receiver.add(subscriber)
+            except Exception as e:
+                 print(f"Error creating delivery letter: {e}")
+
+        except Exception as e:
+            print(f"Error creating delivery letter: {e}")
 
 
+
+
+post_save.connect(updateDelivery, sender=Order)
 post_save.connect(createOrderLetter, sender=Order)
 post_save.connect(notifyLowReview, sender=Review)
 post_save.connect(updateStock, sender=OrderProduct)

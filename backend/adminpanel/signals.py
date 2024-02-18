@@ -7,28 +7,15 @@ from adminpanel.models import  Stock, Product, Letter, Notification
 from frontend.models import Subscriber
 
 
-@receiver(post_save, sender=Stock)
-def updateOutOfStock(sender, instance, created, **kwargs):
-    product = instance.product
-    stock = instance
-    try:
-        if all([
-            stock.stock_XS == 0,
-            stock.stock_S == 0,
-            stock.stock_M == 0,
-            stock.stock_L == 0,
-            stock.stock_XL == 0
-        ]):
-            product.out_of_stock = True
-        else:
-            product.out_of_stock = False
-        product.save()
-        if product.out_of_stock:
-            notification_body = f"{product.name} is out of stock as of {timezone.now().strftime('%d-%m-%Y-%H-%M')}"
-            Notification.objects.create(body=notification_body)
-    except Exception as e:
-        print(f"Error updating out of stock status: {e}")
 
+
+@receiver(post_save, sender=Product)
+def notifyOutOfStock(sender, instance, **kwargs):
+    if instance.out_of_stock:
+        notification_body = f"{instance.name} is out of stock as of {timezone.now().strftime('%d-%m-%Y-%H-%M')}"
+        Notification.objects.create(body=notification_body)
+        
+    
 @receiver(post_save, sender=Product)
 def updateNewProduct(sender, instance, created, **kwargs):
     if created and instance.tag in ['featured', 'new-arrival']:
@@ -42,5 +29,5 @@ def updateNewProduct(sender, instance, created, **kwargs):
             print(f"Error creating letter: {e}")
 
 
-post_save.connect(updateOutOfStock, sender=Stock)
+post_save.connect(notifyOutOfStock, sender=Product)
 post_save.connect(updateNewProduct, sender=Product)

@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-
 from django.db import IntegrityError
 
 from .serializers import *
@@ -15,39 +14,22 @@ from .models import *
 
 @api_view(['POST'])
 def createCustomer(request):
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
             serializer = CustomerSerializer(data=request.data)
-
-            try:
-                serializer.is_valid(raise_exception=True)
-            except Exception as validation_error:
-                print(1,validation_error)
-                return Response({'error': str(validation_error)}, status=status.HTTP_400_BAD_REQUEST)
-
-            try:
-                serializer.save()
-            except Exception as save_error:
-                print(2,save_error)
-                return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            data = {
-                'message':'Registration Success',
-                'data' : serializer.data
-            }
-            return Response(data, status=status.HTTP_201_CREATED)
-
-    except Exception as generic_error:
-        print(3,generic_error)
-        return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data['id'], status=status.HTTP_201_CREATED)          
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
 @api_view(['GET'])
 def getCustomers(request):
     try:
-        customers = customer.objects.all()
+        customers = Customer.objects.all()
         serialized_customers = CustomerSerializer(customers, many=True)
         return Response(serialized_customers.data)
     except Exception as e:
@@ -63,95 +45,47 @@ def getCustomer(request, pk):
         return Response(serialized_customer.data)
     except Customer.DoesNotExist as e:
         print(e)
-        return Response({"error": "Id not valid"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(e)
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # -----------------------------Order--------------------------------
 
 
-
+        
 @api_view(['POST'])
 def createOrder(request):
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
             serializer = OrderSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-            try:
-                serializer.is_valid(raise_exception=True)
-            except serializers.ValidationError as validation_error:
-                data = {
-                    'message': validation_error.detail
-                }
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
-            try:
-                serializer.save()
-            except serializers.ValidationError as save_error:
-                data = {
-                    'message': save_error.detail
-                }
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as generic_error:
-                data = {
-                    'message': "Error saving order: {}".format(str(generic_error))
-                }
-                return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            data = {
-                'message': 'Order Created',
-                'data': serializer.data
-            }
-            print(data)
-            return Response(data, status=status.HTTP_201_CREATED)
-
-    except Exception as generic_error:
-        print(generic_error)
-        traceback.print_exc()
-        return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
+              
 
 @api_view(['PUT'])
 def updateOrder(request, pk):
-    try:
-        order = Order.objects.get(id=pk)
-
-        if request.method in ['PUT']:
+    if request.method == ['PUT']:
+        try:
+            order = Order.objects.get(id=pk)
             serializer = OrderSerializer(order, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except order.DoesNotExist as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            try:
-                serializer.is_valid(raise_exception=True)
-            except serializers.ValidationError as validation_error:
-                data = {
-                    'message': validation_error.detail
-                }
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-            try:
-                serializer.save()
-            except serializers.ValidationError as save_error:
-                data = {
-                    'message': save_error
-                }
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
-            except Exception as generic_error:
-                data = {
-                    'message': generic_error
-                }
-                return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            data = {
-                'message': 'Order Updated',
-                'data': serializer.data
-            }
-            return Response(data, status=status.HTTP_200_OK)
-
-    except Exception as generic_error:
-        return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -162,10 +96,10 @@ def getOrder(request, pk):
         return Response(serialized_order.data, status=status.HTTP_200_OK)
     except Order.DoesNotExist as e:
         print(e)
-        return Response({"error": "Tracking Id not valid"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(e)
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
@@ -175,9 +109,68 @@ def getOrders(request):
         serialized_orders = OrderSerializer(orders, many=True)
         return Response(serialized_orders.data)
     except Exception as e:
+        print(e)
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+#-----------------------OrderProduct-------------------------
+
+
+
+
+@api_view(['POST'])
+def createOrderProduct(request):
+    if request.method == 'POST':
+        try:
+            serializer = OrderProductSerializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+        
+@api_view(['PUT'])
+def updateOrder(request, pk):
+    try:
+        order_instance = Order.objects.get(id=pk)
+    except Order.DoesNotExist:
+        return Response("Order not found", status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        try:
+            serializer = OrderSerializer(order_instance, data=request.data, partial=True)  
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getOrderProducts(request):
+    try:
+        order_products = OrderProduct.objects.all()
+        serialized_order_products = OrderProductSerializer(order_products, many=True)
+        return Response(serialized_order_products.data)
+    except Exception as e:
+        print(e)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def getOrderProduct(request, pk):
+    try:
+        order_product = OrderProduct.objects.get(id=pk)
+        serialized_order_product = OrderProductSerializer(order_product)
+        return Response(serialized_order_product.data, status=status.HTTP_200_OK)
+    except OrderProduct.DoesNotExist:
+        return Response("OrderProduct not found", status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(e)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
 
 
@@ -187,31 +180,18 @@ def getOrders(request):
 
 @api_view(['POST'])
 def createReview(request):
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
+     
             serializer = ReviewSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)           
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-            try:
-                serializer.is_valid(raise_exception=True)
-            except Exception as validation_error:
-                print(1, validation_error)
-                return Response({'error': str(validation_error)}, status=status.HTTP_400_BAD_REQUEST)
-
-            try:
-                serializer.save()
-            except Exception as save_error:
-                print(2, save_error)
-                return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            report = {
-                'message': 'Review Created Successfully',
-                'data': serializer.data
-            }
-            return Response(report, status=status.HTTP_201_CREATED)
-
-    except Exception as generic_error:
-        print(3, generic_error)
-        return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
 
 
 @api_view(['GET'])
@@ -221,6 +201,7 @@ def getReviews(request):
         serialized_reviews = ReviewSerializer(reviews, many=True)
         return Response(serialized_reviews.data, status=status.HTTP_200_OK)
     except Exception as e:
+        print(e)
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -230,11 +211,12 @@ def getReview(request, pk):
         review = Review.objects.get(id=pk)
         serialized_review = ReviewSerializer(review)
         return Response(serialized_review.data, status=status.HTTP_200_OK)
-    except Review.DoesNotExist:
-        print(Review.DoesNotExist)
-        return Response({'error': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Review.DoesNotExist as e:
+        print(e)
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(e)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # ------------------------Subscriber-------------------------------
@@ -242,33 +224,16 @@ def getReview(request, pk):
 
 @api_view(['POST'])
 def createSubscriber(request):
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
+        
             serializer = SubscriberSerializer(data=request.data)
-
-            try:
-                serializer.is_valid(raise_exception=True)
-            except Exception as validation_error:
-                print(1,validation_error)
-                return Response({'error': str(validation_error)}, status=status.HTTP_400_BAD_REQUEST)
-
-            try:
-                serializer.save()
-            except Exception as save_error:
-                print(2,save_error)
-                return Response({'error': str(save_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            report = {
-                'message':'Registration Success',
-                'data' : serializer.data
-            }
-            return Response(report, status=status.HTTP_201_CREATED)
-
-    except Exception as generic_error:
-        print(3,generic_error)
-        return Response({'error': str(generic_error)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -278,6 +243,7 @@ def getSubscribers(request):
         serialized_subscribers = SubscriberSerializer(subscribers, many=True)
         return Response(serialized_subscribers.data)
     except Exception as e:
+        print(e)
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
@@ -288,7 +254,10 @@ def getSubscriber(request, pk):
         return Response(serialized_subscriber.data,status=status.HTTP_200_OK)
     except Subscriber.DoesNotExist:
         print(Subscriber.DoesNotExist)
-        return Response({'error': 'Subscriber not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
+        print(e)
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 

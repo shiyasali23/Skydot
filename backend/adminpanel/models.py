@@ -4,6 +4,12 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from django.core.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class Product(models.Model):
     CATEGORY_CHOICES = [
         ('shirt', 'Shirt'),
@@ -36,21 +42,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-def updateOutofStock(self):
-        try:
-            if all([
-                self.stock.stock_XS == 0,
-                self.stock.stock_S == 0,
-                self.stock.stock_M == 0,
-                self.stock.stock_L == 0,
-                self.stock.stock_XL == 0
-            ]):
-                self.out_of_stock = True
-            else:
-                self.out_of_stock = False
-            self.save()
-        except Exception as e:
-            print(e)
+    
 
 
 
@@ -69,6 +61,28 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.product.name
+    
+    def save(self, *args, **kwargs):
+        try:
+            if all([
+                self.stock_XS == 0,
+                self.stock_S == 0,
+                self.stock_M == 0,
+                self.stock_L == 0,
+                self.stock_XL == 0
+            ]):
+                self.product.out_of_stock = True
+            else:
+                self.product.out_of_stock = False
+            self.product.save()
+            super(Stock, self).save(*args, **kwargs)  
+        except Exception as e:
+            print(e)
+            raise ValidationError(f"Cant update Stock: {str(e)}")
+
+    
+    
+
 
 
 class ProductImage(models.Model):
@@ -97,7 +111,8 @@ class Notification(models.Model):
 class Letter(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
-    receiver = models.ManyToManyField('frontend.Subscriber', blank=False, related_name='letters')    
+    receiver = models.ManyToManyField('frontend.Subscriber', blank=True,null=True, related_name='letters')
+    toAll = models.BooleanField(default=False,null=True, blank=True)    
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):

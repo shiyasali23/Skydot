@@ -31,6 +31,7 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
         ('returned', 'Returned'),
+        ('failed', 'Failed'),
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
@@ -66,7 +67,7 @@ class OrderProduct(models.Model):
 
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=False, blank=False, related_name='order_product')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, related_name='order_product')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.PositiveIntegerField(null=False, blank=False, default=1)
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=False, blank=False)
@@ -74,15 +75,14 @@ class OrderProduct(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        item = f"{self.product} {self.size} {self.quantity} "
-        return item
+        return f"{self.product} {self.size} {self.quantity} "
+    
     def save(self, *args, **kwargs):
         if self.product and self.size:
             stock_field = f"stock_{self.size}"
             available_stock = getattr(self.product.stock, stock_field, 0)
             if self.quantity > available_stock:
                 raise ValidationError(f"Insufficient stock for {self.product} ({self.size})")
-        
         super().save(*args, **kwargs)
 
 
