@@ -18,8 +18,8 @@ function App() {
         <OrdersProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/" element={<OrdersPage />} />
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/orders" element={<OrdersPage />} />
               <Route path="/manage-orders/:id" element={<ManageOrders />} />
 
               <Route path="/products" element={<ProductsPage />} />

@@ -5,9 +5,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from django.core.exceptions import ValidationError
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class Product(models.Model):
@@ -43,12 +40,6 @@ class Product(models.Model):
         return self.name
 
     
-
-
-
-
-
-
 class Stock(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='stock')
@@ -82,9 +73,6 @@ class Stock(models.Model):
 
     
     
-
-
-
 class ProductImage(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='images')
@@ -98,21 +86,17 @@ class ProductImage(models.Model):
         return self.product.name
 
 
-
-class Notification(models.Model):
+class Message(models.Model):
+    TO_CHOICES = [
+        ('all', 'ALL'),
+        ('admin', 'ADMIN'),
+        ('customer','CUSTOMER')
+    ]
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     body = models.TextField(max_length=2000, null=False, blank=False)
-    seen = models.BooleanField(default=False,null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-
-    def __str__(self):
-        return self.body
-
-class Letter(models.Model):
-    id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    body = models.TextField(max_length=2000, null=False, blank=False)
-    receiver = models.ManyToManyField('frontend.Subscriber', blank=True,null=True, related_name='letters')
-    toAll = models.BooleanField(default=False,null=True, blank=True)    
+    phone_number = models.IntegerField(null=True, blank=True) 
+    to = models.CharField(max_length=8, choices=TO_CHOICES, null=True, blank=True)  
+    seen = models.BooleanField(default=False, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):

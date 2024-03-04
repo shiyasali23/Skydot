@@ -1,14 +1,42 @@
 from django.db import transaction
-from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAdminUser
+
 from .serializers import *
 
+# ------------------Authentication------------------------
+
+@api_view(['POST'])
+def adminLogin(request):
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_active and user.is_superuser:
+            refresh = RefreshToken.for_user(user)
+            token = {
+                'access': str(refresh.access_token),
+            }
+            return Response(token, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
 
 # -----------------------Product------------------------
 
 @api_view(['POST'])
+@permission_classes([IsAdminUser])
 def createProduct(request):
+    print('hi')
     if request.method == 'POST':
         try:
             serializer = ProductSerializer(data=request.data)
@@ -21,6 +49,7 @@ def createProduct(request):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAdminUser])
 def updateProduct(request, pk):
     if request.method == 'PUT':
         try:
@@ -74,6 +103,7 @@ def deleteProduct(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def getProducts(request):
     try:
         products = Product.objects.all()
@@ -85,6 +115,7 @@ def getProducts(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def getProduct(request, pk):
     try:
         product = Product.objects.get(id=pk)
@@ -98,38 +129,46 @@ def getProduct(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# -----------------------Letter------------------------
+
+
 @api_view(['POST'])
-def createLetter(request):
+def createMessage(request):
     if request.method == 'POST':
         try:
-            serializer = LetterSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            message_serializer = MessageSerializer(data=request.data)
+            if message_serializer.is_valid():
+                message_serializer.save()
+                return Response({'message': 'Message created successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': message_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
 
 
 @api_view(['GET'])
-def getLetters(request):
+@permission_classes([IsAdminUser])
+def getMessages(request):
     try:
-        letters = Letter.objects.all()
-        serialized_letters = LetterSerializer(letters, many=True)
-        return Response(serialized_letters.data, status=status.HTTP_200_OK)
+        Messages = Message.objects.all()
+        serialized_Messages = MessageSerializer(Messages, many=True)
+        return Response(serialized_Messages.data, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
-def getLetter(request, pk):
+@permission_classes([IsAdminUser])
+def getMessage(request, pk):
+    print('kundi')
     try:
-        letter = Letter.objects.get(id=pk)
-        serialized_letter = LetterSerializer(letter)
-        return Response(serialized_letter.data, status=status.HTTP_200_OK)
-    except Letter.DoesNotExist as e:
+        message_instance = Message.objects.get(id=pk)
+        serialized_message = MessageSerializer(message_instance)
+        return Response(serialized_message.data, status=status.HTTP_200_OK)
+    except Message.DoesNotExist as e:
         print(e)
         return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -137,50 +176,3 @@ def getLetter(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# -----------------------Notification------------------------
-@api_view(['PUT'])
-def updateNotification(request, pk):
-    if request.method == 'PUT': 
-        try:
-            notification = Notification.objects.get(id=pk)
-            if 'seen' in request.data:
-                data = {'seen': request.data['seen']}  
-                serializer = NotificationSerializer(notification, data=data, partial=True)
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'The "seen" field is required in the request data.'}, status=status.HTTP_400_BAD_REQUEST)
-        except Notification.DoesNotExist as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
-@api_view(['GET'])
-def getNotifications(request):
-    try:
-        notifications = Notification.objects.all()
-        serialized_notifications = NotificationSerializer(notifications, many=True)
-        return Response(serialized_notifications.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        print(e)
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(['GET'])
-def getNotification(request, pk):
-    try:
-        notification = Notification.objects.get(id=pk)
-        serialized_notification = NotificationSerializer(notification)
-        return Response(serialized_notification.data, status=status.HTTP_200_OK)
-    except Notification.DoesNotExist as e:
-        print(e)
-        return Response({'error': 'Notification not found'}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        print(e)
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

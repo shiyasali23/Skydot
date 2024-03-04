@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Customer, Subscriber, Order, OrderProduct, Review
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.exceptions import ValidationError
 
 
@@ -14,45 +14,40 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 # --------------------Order------------------------------
-
 class OrderProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
         fields = '__all__'
-        
-
+   
+    def validate(self, data):
+        product = data.get('product')
+        size = data.get('size')
+        if not product:
+            raise serializers.ValidationError("Product is required")
+        if not size:
+            raise serializers.ValidationError("Size is required")
+        return data
 
 class OrderSerializer(serializers.ModelSerializer):
-    owner = CustomerSerializer()
-    order_product = OrderProductSerializer(many=True)
+    customer = CustomerSerializer()
+    order_products = OrderProductSerializer(many=True)
 
     class Meta:
         model = Order
         fields = '__all__'
 
-
-    def create_customer(self, validated_data):
-        try:
-            customer_data = validated_data.pop('owner')
-            customer = Customer.objects.create(**customer_data)
-            return customer
-        except Exception as e:
-            raise ValidationError(f"Failed to create customer: {str(e)}")
-
     def create(self, validated_data):
-        try:
-            order_product_data = validated_data.pop('order_product')
-            customer = self.create_customer(validated_data)
-            order_instance = Order.objects.create(owner=customer, **validated_data)
-            for product_data in order_product_data:
-                try:
-                    OrderProduct.objects.create(order=order_instance, **product_data)
-                except Exception as e:
-                    print(e)
-                    raise ValidationError(f"Failed to create orderProduct: {str(e)}")
+        with transaction.atomic():
+            customer_data = validated_data.pop('customer')
+            order_products_data = validated_data.pop('order_products')
+            customer_instance = Customer.objects.create(**customer_data)
+            order_instance = Order.objects.create(customer=customer_instance, **validated_data)
+            for order_product_data in order_products_data:
+                OrderProduct.objects.create(order=order_instance, **order_product_data)
             return order_instance
-        except Exception as e:
-            raise ValidationError(f"Failed to create order: {str(e)}")
+
+
+            
     
     def update(self, instance, validated_data):
         try:

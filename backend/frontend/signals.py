@@ -7,8 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist,ValidationError
 
 from .models import Order, OrderProduct, Review, Subscriber
 
-from adminpanel.serializers import ProductSerializer, StockSerializer, LetterSerializer
-from adminpanel.models import Letter,Product,Stock, Notification
+from adminpanel.serializers import ProductSerializer, StockSerializer, MessageSerializer
+from adminpanel.models import Message,Product,Stock
 
 from django.db.models import F
 from django.db.models import Sum
@@ -48,45 +48,52 @@ def updateStock(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Order)
-def createOrderLetter(sender, instance, created, **kwargs):
+def createOrderMessage(sender, instance, created, **kwargs):
     if created and instance.isWhatsapp:
         try:
-            owner = instance.owner
-            phone_number = owner.phone_number
-            name = owner.name
+            customer = instance.customer
+            phone_number = customer.phone_number
+            name = customer.name
             subscriber = Subscriber.objects.filter(phone_number=phone_number).first()
             if not subscriber:
                 subscriber = Subscriber(name=name, phone_number=phone_number)
                 subscriber.save()
             order_tracking_id = instance.tracking_id
-            letter_body = f"Thank you for your order! Your order with tracking ID {order_tracking_id} has been successfully placed."
-            letter = Letter(body=letter_body)
-            letter.save()
-            letter.receiver.add(subscriber)
+            message_data = {
+                'body': f"Thank you for your order! Your order with tracking ID {order_tracking_id} has been successfully placed.",
+                'to': 'customer',
+                'phone_number': instance.customer.phone_number
+            }
+            message_instance = Message(**message_data)
+            message_instance.save()
+            message_instance.receiver.add(subscriber)
         except Exception as e:
-            print(f"Error creating order letter: {e}")
+            print(e)
+            print(f"Error creating order Message: {e}")
+
 
 
 @receiver(post_save, sender=Review)
 def notifyLowReview(sender, instance, created, **kwargs):
     if created and instance.rating == 1:
         try:
-            owner = instance.orderProduct.order.owner
+            customer = instance.orderProduct.order.customer
             product = instance.orderProduct.product
             review_body = instance.body
             
-            notification_body = f"{product.name} received 1 star. "
-            notification_body += f"Review: {review_body}" if review_body else "Reason not provided."
-            notification_body += f" You can contact {owner.name} at {owner.phone_number}."
-            notification_body += f" (This product has {product.vote}% positive votes.)"
+            message_body = f"{product.name} received 1 star. "
+            message_body += f"Review: {review_body}" if review_body else "Reason not provided."
+            message_body += f" You can contact {customer.name} at {customer.phone_number}."
+            message_body += f" (This product has {product.vote}% positive votes.)"
             
-            notification_data = {
-                'body': notification_body
+            message_data = {
+                'body': message_body,
+                'to':'admin'
             }   
             try:
-                Notification.objects.create(**notification_data)
+                Message.objects.create(**message_data)
             except Exception as e:
-                print(f"Error creating notification: {e}")
+                print(f"Error creating message: {e}")
         except ObjectDoesNotExist as e:
             print(f"Object does not exist: {e}")
         except Exception as e:
@@ -94,16 +101,19 @@ def notifyLowReview(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Subscriber)
-def createWelcomeLetter(sender, instance, created, **kwargs):
+def createWelcomeMessage(sender, instance, created, **kwargs):
     if created:
         try:
             subscriber_name = instance.name
-            letter_body = f"Hello {subscriber_name}! Thank you for subscribing. Welcome to our community."
-            letter = Letter(body=letter_body)
-            letter.save()
-            letter.receiver.add(instance)
+            phone_number = instance.phone_number
+            message_data = {
+                'body':f"Hello {subscriber_name}! Thank you for subscribing. Welcome to our community.",
+                'to':'customer',
+                'phone_number': phone_number
+            }
+            Message.objects.create(**message_data) 
         except Exception as e:
-            print(f"Error creating welcome letter: {e}")
+            print(f"Error creating welcome Message: {e}")
 
 
 @receiver(post_save, sender=Review)
@@ -130,31 +140,27 @@ def update_vote(sender, instance, **kwargs):
 def updateDelivery(sender, instance, **kwargs):
     if instance.deliveredAt and instance.isWhatsapp:
         try:
-            owner_name = instance.owner.name
-            phone_number = instance.owner.phone_number
-            
-            subscriber = Subscriber.objects.filter(phone_number=phone_number).first()
-            if not subscriber:
-                subscriber = Subscriber(name=owner_name, phone_number=phone_number)
-                subscriber.save()
-                
+            customer_name = instance.customer.name
+            phone_number = instance.customer.phone_number              
             order_tracking_id = instance.tracking_id
-            letter_body = f"Hello {owner_name}! Your order with tracking id {order_tracking_id} was delivered successfully at {instance.deliveredAt.strftime('%d-%m-%Y-%H-%M')}"
+            message_data = {
+                'body':f"Hello {customer_name}! Your order with tracking id {order_tracking_id} was delivered successfully at {instance.deliveredAt.strftime('%d-%m-%Y-%H-%M')}",
+                'to':'customer',
+                'phone_number': phone_number
+            }
             try:
-                letter = Letter(body=letter_body)
-                letter.save()
-                letter.receiver.add(subscriber)
+                Message.objects.create(**message_data)
             except Exception as e:
-                 print(f"Error creating delivery letter: {e}")
+                print(f"Error creating delivery Message: {e}")
 
         except Exception as e:
-            print(f"Error creating delivery letter: {e}")
+            print(f"Error creating delivery Message: {e}")
 
 
 
 
 post_save.connect(updateDelivery, sender=Order)
-post_save.connect(createOrderLetter, sender=Order)
+post_save.connect(createOrderMessage, sender=Order)
 post_save.connect(notifyLowReview, sender=Review)
 post_save.connect(updateStock, sender=OrderProduct)
-post_save.connect(createWelcomeLetter, sender=Subscriber)
+post_save.connect(createWelcomeMessage, sender=Subscriber)
