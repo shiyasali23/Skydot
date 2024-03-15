@@ -1,11 +1,20 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NavBar from "../Components/NavBar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { productsContext } from "../Contexts/ProductsContext";
 
 const EditProductPage = () => {
   const { id } = useParams();
-  const { productsArray, updateProduct, registerProduct } = useContext(productsContext);
+  const { productsArray, registerProduct, updateProduct } = useContext(productsContext);
+
+  const navigate= useNavigate()
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/");
+    }
+  },);
   
   const [product, setProduct] = useState(
     id

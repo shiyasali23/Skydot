@@ -25,9 +25,11 @@ def adminLogin(request):
             }
             return Response(token, status=status.HTTP_200_OK)
         else:
-            return Response({'detail': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+            print('invalid username or password')
+            return Response('Invalid username or password', status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(e)
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
 

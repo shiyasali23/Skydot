@@ -19,6 +19,7 @@ const ManageOrders = () => {
     updateOrder(order)
   }
 
+
   return (
     <div className="manage-order-page">
       <NavBar />
@@ -52,41 +53,41 @@ const ManageOrders = () => {
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Name</h5>
-            <h5 className="manage-order-value">{order?.owner_details?.name}</h5>
+            <h5 className="manage-order-value">{order?.customer?.name}</h5>
           </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Email</h5>
             <h5 className="manage-order-value">
-              {order ? order.owner_details.email : ""}
+              {order?.customer?.email}
             </h5>
           </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Phone Number</h5>
             <h5 className="manage-order-value">
-              {order ? order.owner_details.phone_number : ""}
+              {order?.customer?.phone_number}
             </h5>
           </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">City</h5>
             <h5 className="manage-order-value">
-              {order ? order.owner_details.city : ""}
+              {order?.customer?.city}
             </h5>
           </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Pincode</h5>
             <h5 className="manage-order-value">
-              {order?.owner_details?.pincode}
+              {order?.customer?.pincode}
             </h5>
           </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Address</h5>
             <h5 className="manage-order-value">
-              {order?.owner_details?.address}
+              {order?.customer?.address}
             </h5>
           </div>
         </div>
@@ -103,7 +104,6 @@ const ManageOrders = () => {
                   className="manage-order-select"
                   name="order-status"
                   id="order-status"
-                  value={id ? order?.status : ""}
                   onChange={(e) =>
                     setOrder({ ...order, status: e.target.value })
                   }
@@ -111,8 +111,10 @@ const ManageOrders = () => {
                   <option value="processing">Processing</option>
                   <option value="moved">Moved</option>
                   <option value="shipped">Shipped</option>
-                  <option value="shipped">Delivered</option>
-                  <option value="return">Return</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancell</option>
+                  <option value="returned">Returned</option>
+                  <option value="failed">Failed</option>
                 </select>
               )}
             </div>

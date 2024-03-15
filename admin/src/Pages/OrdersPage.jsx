@@ -1,12 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import NavBar from "../Components/NavBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ordersContext } from "../Contexts/OrdersContext";
 
 const OrdersPage = () => {
-  const { ordersArray } = useContext(ordersContext);
 
-  console.log(ordersArray);
+  const { ordersArray,message } = useContext(ordersContext);
+  const navigate= useNavigate()
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/");
+    }
+  },); 
+
+  
+
+
   return (
     <div className="orders-page">
       <NavBar />
@@ -23,17 +34,21 @@ const OrdersPage = () => {
       </div>
 
       <div className="orders-container">
-        {ordersArray ? (
+        {!message ? (
           ordersArray.map((order, index) => (
             <div className="orders-card" key={index}>
               <h5 className="orders-card-value">
                 {new Date(order.created).toISOString().split("T")[0]}
               </h5>
               <h5 className="orders-card-value">{order.tracking_id}</h5>
-              <h5 className="orders-card-value">{order.owner_details.name}</h5>
-              <h5 className="orders-card-value">{order.owner_details.city}</h5>
+              <h5 className="orders-card-value">
+                {order.customer.name}
+              </h5>
+              <h5 className="orders-card-value">
+                {order.customer.city}
+              </h5>
               <h5 className="orders-card-value">${order.total_price}</h5>
-              <h5 className="orders-card-value">3</h5>
+              <h5 className="orders-card-value">{order.order_products.reduce((total, product) => total + product.quantity, 0)}</h5>
               <h5 className="orders-card-value">
                 {order?.deliveredAt ? (
                   new Date(order.deliveredAt).toLocaleDateString()
@@ -85,7 +100,7 @@ const OrdersPage = () => {
               margin: "10% 0px",
             }}
           >
-            Oops Something Went Wrong...
+            {message}
           </h3>
         )}
       </div>

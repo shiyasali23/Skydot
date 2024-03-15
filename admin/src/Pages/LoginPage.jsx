@@ -1,41 +1,53 @@
-import React from "react";
-import { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-
+import React, { useState, useContext, useEffect } from "react";
+import Message from "../Components/Message";
+import { AdminContext } from "../Contexts/AuthenticationContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [validated, setValidated] = useState(false);
+  const { fetchAdminLogin, message } = useContext(AdminContext); 
+  const storedToken = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (storedToken) {
+      navigate("/orders"); 
+    }
+  }, [storedToken, navigate]);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    setValidated(true);
+    event.preventDefault();
+    fetchAdminLogin(username, password);
   };
 
   return (
     <div className="login-page">
-      <Form className="login-form" noValidate validated={validated} onSubmit={handleSubmit}>
-
-          <Form.Group  controlId="validationCustom01" className="login-form-group">
-            <Form.Control type="text" placeholder="Username" required className="login-input"/>
-            <Form.Control.Feedback type="invalid">
-              Username Required
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group  controlId="validationCustom02" className="login-form-group">
-            <Form.Control type="text" placeholder="Password" required className=" login-input"/>
-            <Form.Control.Feedback type="invalid">
-                Password Required
-            </Form.Control.Feedback>
-          </Form.Group>
-     
-        <Button type="submit">Login</Button>
-      </Form>
+      {message && <Message message={message} />}
+      <form className="login-form" noValidate onSubmit={handleSubmit}>
+        <div className="login-form-group">
+          <input
+            type="text"
+            placeholder="Username"
+            required
+            className="login-input"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <div className="invalid-feedback">Username Required</div>
+        </div>
+        <div className="login-form-group">
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            className="login-input"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="invalid-feedback">Password Required</div>
+        </div>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 };

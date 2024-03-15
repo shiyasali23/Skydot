@@ -19,14 +19,7 @@ class OrderProductSerializer(serializers.ModelSerializer):
         model = OrderProduct
         fields = '__all__'
    
-    def validate(self, data):
-        product = data.get('product')
-        size = data.get('size')
-        if not product:
-            raise serializers.ValidationError("Product is required")
-        if not size:
-            raise serializers.ValidationError("Size is required")
-        return data
+    
 
 class OrderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer()
@@ -46,9 +39,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 OrderProduct.objects.create(order=order_instance, **order_product_data)
             return order_instance
 
-
-            
-    
+ 
     def update(self, instance, validated_data):
         try:
             if any(field in validated_data for field in ['status', 'note', 'deliveredAt']):

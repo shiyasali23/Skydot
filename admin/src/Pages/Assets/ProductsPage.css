@@ -21,7 +21,7 @@
   justify-content: space-between;
 }
 .product-header-value {
-  width: 75px;
+  width: 70px;
   font-size: 12px;
   font-weight: 800;
   /* border: 1px solid black; */
@@ -82,7 +82,7 @@ letter-spacing: 1px;
 
 }
 .product-card-name{
-    width: 410px;
+    width: 300px;
     /* border: 1px solid black; */
 
 }

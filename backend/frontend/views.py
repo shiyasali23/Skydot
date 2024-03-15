@@ -1,7 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.db import IntegrityError, transaction
+from rest_framework.permissions import IsAdminUser
+
 
 from .serializers import *
 from .models import *
@@ -93,10 +95,15 @@ def getOrder(request, pk):
         return Response(str(e), status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(e)
+        data = {
+            'error' : str(e),
+            'message': "Internal server error"
+        }
         return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
+@permission_classes([IsAdminUser])
 def getOrders(request):
     try:
         orders = Order.objects.all()
@@ -104,7 +111,11 @@ def getOrders(request):
         return Response(serialized_orders.data)
     except Exception as e:
         print(e)
-        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        data = {
+            'error' : str(e),
+            'message': "Internal server error"
+        }
+        return Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 #-----------------------OrderProduct-------------------------

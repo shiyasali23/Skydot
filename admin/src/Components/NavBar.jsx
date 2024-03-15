@@ -1,8 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
 
 
 const NavBar = () => {
+
+  const navigate =useNavigate()
+
+  const logOut = () => {
+    localStorage.removeItem("token"); 
+ 
+    navigate("/")
+  };
+
   return (
     <div className="nav-bar">
       <h1 className="nav-logo">
@@ -26,9 +35,7 @@ const NavBar = () => {
         <i className="fa-solid fa-bell"></i>
         </Link> 
         
-        <Link style={{ textDecoration: "none" }} to="/notification">
-        <i className="fa-solid fa-right-from-bracket"></i>
-        </Link>
+        <i className="fa-solid fa-right-from-bracket" onClick={logOut}></i>
       
       </div>
     </div>
