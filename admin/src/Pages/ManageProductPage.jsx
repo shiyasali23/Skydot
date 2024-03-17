@@ -5,45 +5,65 @@ import { productsContext } from "../Contexts/ProductsContext";
 
 const EditProductPage = () => {
   const { id } = useParams();
-  const { productsArray, registerProduct, updateProduct } = useContext(productsContext);
+  const { productsArray, registerProduct, updateProduct } =
+    useContext(productsContext);
 
-  const navigate= useNavigate()
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      navigate("/");
-    }
-  },);
-  
-  const [product, setProduct] = useState(
-    id
-      ? productsArray.find((product) => product.id === id)
-      : {
-          name: '',
-          description: '',
-          price: '',
-          main_image: '',
-          sub_image_1: '',
-          sub_image_2: '',
-          sub_image_3: '',
-          stock_XS: '',
-          stock_S: '',
-          stock_M: '',
-          stock_L: '',
-          stock_XL: '',
-          category: '',
-          gender: '',
+    const [product, setProduct] = useState(null);
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      if (id) {
+        const foundProduct = productsArray.find((product) => product.id === id);
+        if (foundProduct) {
+          setProduct(foundProduct);
+        } else {
+          setProduct(null); // or some other default value
         }
-  );
+      }
+      
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        navigate("/");
+      }
+    }, [productsArray, id, navigate]);
+    
+    const [productObj, setProductObj] = useState({
+      name: product ? product.name : "",
+      description: product ? product.description : "",
+      price: product ? parseFloat(product.price) : 0,
+      category: product ? product.category : "",
+      gender: product ? product.gender : "",
+      tag: product ? product.tag : "",
+      vote: product ? product.vote : "", // Assuming vote is a number
+      out_of_stock: product ? product.out_of_stock : false,
+      stock: product ? product.stock : {
+        stock_XS: 0,
+        stock_S: 0,
+        stock_M: 0,
+        stock_L: 0,
+        stock_XL: 0,
+        product: "",
+      },
+      created: product ? product.created : new Date().toISOString(),
+      id: product ? product.id : "", // Assuming id is a string
+    });
+    
+  
 
-  useEffect(() => {
-    setProduct(id ? productsArray.find((product) => product.id === id) : null);
-  }, [productsArray, id]);
+  const handleImageChange = (e, imageKey) => {
+    if (product && product.images) {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        images: {
+          ...prevProduct.images,
+          [imageKey]: URL.createObjectURL(e.target.files[0]),
+        },
+      }));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
     if (id) {
       updateProduct(product);
     } else {
@@ -51,7 +71,6 @@ const EditProductPage = () => {
     }
   };
 
-  console.log(product);
   return (
     <div className="edit-product-page">
       <NavBar />
@@ -76,7 +95,7 @@ const EditProductPage = () => {
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="address">Address</label>
+            <label htmlFor="address">Description</label>
             <textarea
               style={{ height: "100px" }}
               className="edit-product-input edit-product-input-large"
@@ -99,14 +118,10 @@ const EditProductPage = () => {
               type="file"
               name="mainImage"
               accept="image/*"
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  main_image: e.target.files[0],
-                })
-              }
+              onChange={(e) => handleImageChange(e, "main_image")}
             />
           </div>
+
           <div className="edit-product-input-container">
             <label htmlFor="subImage1">Sub Image 1</label>
             <input
@@ -115,47 +130,37 @@ const EditProductPage = () => {
               id="sub_image_1"
               name="sub_image_1"
               accept="image/*"
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  sub_image_1: e.target.files[0],
-                })
-              }
+              onChange={(e) => handleImageChange(e, "sub_image_1")}
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="subImage2">Sub Image 2</label>
+            <label htmlFor="subImage1">Sub Image 2</label>
             <input
               className="edit-product-image-input"
               type="file"
               id="sub_image_2"
               name="sub_image_2"
               accept="image/*"
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  sub_image_2: e.target.files[0],
-                })
-              }
+              onChange={(e) => handleImageChange(e, "sub_image_2")}
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="subImage3">Sub Image 3</label>
+            <label htmlFor="subImage1">Sub Image 3</label>
             <input
               className="edit-product-image-input"
               type="file"
               id="sub_image_3"
               name="sub_image_3"
               accept="image/*"
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  sub_image_3: e.target.files[0],
-                })
-              }
+              onChange={(e) => handleImageChange(e, "sub_image_3")}
             />
+          </div>
+
+          <div className="edit-product-input-container">
+            <label htmlFor="vote">Vote</label>
+            <h5>{product?.vote ?? ""}</h5>
           </div>
         </div>
 
@@ -167,65 +172,95 @@ const EditProductPage = () => {
               type="number"
               placeholder="Stock XS"
               name="stock_XS"
-              value={product?.stock_XS ?? ""}
+              value={product?.stock?.stock_XS ?? ""}
               onChange={(e) =>
-                setProduct({ ...product, stock_XS: e.target.value })
+                setProduct({
+                  ...product,
+                  stock: {
+                    ...(product?.stock || {}),
+                    stock_XS: e.target.value,
+                  },
+                })
               }
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="stockXS">Stock S</label>
+            <label htmlFor="stockS">Stock S</label>
             <input
               className="edit-product-input"
               type="number"
               placeholder="Stock S"
               name="stock_S"
-              value={product?.stock_S ?? ""}
+              value={product?.stock?.stock_S ?? ""}
               onChange={(e) =>
-                setProduct({ ...product, stock_S: e.target.value })
+                setProduct({
+                  ...product,
+                  stock: {
+                    ...(product?.stock || {}),
+                    stock_S: e.target.value,
+                  },
+                })
               }
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="stockXS">Stock M</label>
+            <label htmlFor="stockM">Stock M</label>
             <input
               className="edit-product-input"
               type="number"
               placeholder="Stock M"
-              name="stockM"
-              value={product?.stock_M ?? ""}
+              name="stock_M"
+              value={product?.stock?.stock_M ?? ""}
               onChange={(e) =>
-                setProduct({ ...product, stock_M: e.target.value })
+                setProduct({
+                  ...product,
+                  stock: {
+                    ...(product?.stock || {}),
+                    stock_M: e.target.value,
+                  },
+                })
               }
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="stockXS">Stock L</label>
+            <label htmlFor="stockL">Stock L</label>
             <input
               className="edit-product-input"
               type="number"
               placeholder="Stock L"
               name="stock_L"
-              value={product?.stock_L ?? ""}
+              value={product?.stock?.stock_L ?? ""}
               onChange={(e) =>
-                setProduct({ ...product, stock_L: e.target.value })
+                setProduct({
+                  ...product,
+                  stock: {
+                    ...(product?.stock || {}),
+                    stock_L: e.target.value,
+                  },
+                })
               }
             />
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="stockXS">Stock XL</label>
+            <label htmlFor="stockXL">Stock XL</label>
             <input
               className="edit-product-input"
               type="number"
               placeholder="Stock XL"
               name="stock_XL"
-              value={product?.stock_XL ?? ""}
+              value={product?.stock?.stock_XL ?? ""}
               onChange={(e) =>
-                setProduct({ ...product, stock_XL: e.target.value })
+                setProduct({
+                  ...product,
+                  stock: {
+                    ...(product?.stock || {}),
+                    stock_XL: e.target.value,
+                  },
+                })
               }
             />
           </div>
@@ -245,12 +280,25 @@ const EditProductPage = () => {
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="category">Category:</label>
+            <label htmlFor="tag">Tag</label>
+            <select
+              className="edit-product-select"
+              id="tag"
+              name="tag"
+              value={product?.tag ?? ""}
+              onChange={(e) => setProduct({ ...product, tag: e.target.value })}
+            >
+              <option value="featured">Featured</option>
+              <option value="new-arrival">New Arrival</option>
+            </select>
+          </div>
+
+          <div className="edit-product-input-container">
+            <label htmlFor="category">Category</label>
             <select
               className="edit-product-select"
               id="category"
               name="category"
-              placeholder="Category"
               value={product?.category ?? ""}
               onChange={(e) =>
                 setProduct({ ...product, category: e.target.value })
@@ -263,7 +311,7 @@ const EditProductPage = () => {
           </div>
 
           <div className="edit-product-input-container">
-            <label htmlFor="gender">Gender:</label>
+            <label htmlFor="gender">Gender</label>
             <select
               className="edit-product-select"
               id="gender"

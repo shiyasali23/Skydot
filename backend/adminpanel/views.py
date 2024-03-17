@@ -36,9 +36,7 @@ def adminLogin(request):
 # -----------------------Product------------------------
 
 @api_view(['POST'])
-@permission_classes([IsAdminUser])
 def createProduct(request):
-    print('hi')
     if request.method == 'POST':
         try:
             serializer = ProductSerializer(data=request.data)
@@ -51,7 +49,6 @@ def createProduct(request):
 
 
 @api_view(['PUT'])
-@permission_classes([IsAdminUser])
 def updateProduct(request, pk):
     if request.method == 'PUT':
         try:
@@ -105,7 +102,6 @@ def deleteProduct(request, pk):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getProducts(request):
     try:
         products = Product.objects.all()
@@ -117,7 +113,6 @@ def getProducts(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getProduct(request, pk):
     try:
         product = Product.objects.get(id=pk)
@@ -151,7 +146,6 @@ def createMessage(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getMessages(request):
     try:
         Messages = Message.objects.all()
@@ -163,7 +157,6 @@ def getMessages(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getMessage(request, pk):
     print('kundi')
     try:

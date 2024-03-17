@@ -26,7 +26,7 @@ class Product(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    name = models.CharField(max_length=200,unique=True, null=False, blank=False)
+    name = models.CharField(max_length=200, unique=True, null=False, blank=False)
     description = models.TextField(max_length=2000, null=False, blank=False)
     price = models.DecimalField(max_digits=10, decimal_places=1, null=False, blank=False)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
@@ -42,13 +42,13 @@ class Product(models.Model):
     
 class Stock(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='stock')
-    stock_XS = models.IntegerField(default=0,null=False, blank=False)
-    stock_S = models.IntegerField(default=0,null=False, blank=False)
-    stock_M = models.IntegerField(default=0,null=False, blank=False)
-    stock_L = models.IntegerField(default=0,null=False, blank=False)
-    stock_XL = models.IntegerField(default=0,null=False, blank=False)
-    created = models.DateTimeField(auto_now_add=True,null=False, blank=False)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='stock')
+    stock_XS = models.IntegerField(default=0, null=False, blank=False)
+    stock_S = models.IntegerField(default=0, null=False, blank=False)
+    stock_M = models.IntegerField(default=0, null=False, blank=False)
+    stock_L = models.IntegerField(default=0, null=False, blank=False)
+    stock_XL = models.IntegerField(default=0, null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
 
     def __str__(self):
         return self.product.name
