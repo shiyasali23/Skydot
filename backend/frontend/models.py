@@ -51,6 +51,11 @@ class Order(models.Model):
     def __str__(self):
         order = f"{str(self.tracking_id)}-{str(self.customer)}"
         return order
+    
+    def save(self, *args, **kwargs):
+        if self.status == 'delivered' and not self.deliveredAt:
+            self.deliveredAt = timezone.now()
+        super(Order, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created']
@@ -118,7 +123,7 @@ class Subscriber(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.phone_number)
+        return f"{str(self.phone_number)} {self.name}"
 
 
 # order = {

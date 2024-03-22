@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import NavBar from "../Components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { productsContext } from "../Contexts/ProductsContext";
+import Message from "../Components/Message";
 
 const EditProductPage = () => {
   const { id } = useParams();
-  const { productsArray, registerProduct, updateProduct } =
+  const { productsArray,message, registerProduct, updateProduct } =
     useContext(productsContext);
 
     const [product, setProduct] = useState(null);
@@ -17,7 +18,7 @@ const EditProductPage = () => {
         if (foundProduct) {
           setProduct(foundProduct);
         } else {
-          setProduct(null); // or some other default value
+          setProduct(null); 
         }
       }
       
@@ -27,42 +28,27 @@ const EditProductPage = () => {
       }
     }, [productsArray, id, navigate]);
     
-    const [productObj, setProductObj] = useState({
-      name: product ? product.name : "",
-      description: product ? product.description : "",
-      price: product ? parseFloat(product.price) : 0,
-      category: product ? product.category : "",
-      gender: product ? product.gender : "",
-      tag: product ? product.tag : "",
-      vote: product ? product.vote : "", // Assuming vote is a number
-      out_of_stock: product ? product.out_of_stock : false,
-      stock: product ? product.stock : {
-        stock_XS: 0,
-        stock_S: 0,
-        stock_M: 0,
-        stock_L: 0,
-        stock_XL: 0,
-        product: "",
-      },
-      created: product ? product.created : new Date().toISOString(),
-      id: product ? product.id : "", // Assuming id is a string
-    });
-    
-  
 
-  const handleImageChange = (e, imageKey) => {
-    if (product && product.images) {
-      setProduct((prevProduct) => ({
-        ...prevProduct,
-        images: {
-          ...prevProduct.images,
-          [imageKey]: URL.createObjectURL(e.target.files[0]),
-        },
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
+    const handleImageChange = (e, imageKey) => {
+      if (product) {
+        // If product exists, update the images
+        setProduct((prevProduct) => ({
+          ...prevProduct,
+          images: {
+            ...prevProduct.images,
+            [imageKey]: e.target.files[0]
+          },
+        }));
+      } else {
+        setProduct({
+          images: {
+            [imageKey]: e.target.files[0],
+          },
+        });
+      }
+    };
+ 
+    const handleSubmit = (e) => {
     e.preventDefault();
     if (id) {
       updateProduct(product);
@@ -70,12 +56,11 @@ const EditProductPage = () => {
       registerProduct(product);
     }
   };
-
   return (
     <div className="edit-product-page">
       <NavBar />
-
-      <form className="edit-product-form">
+{message && <Message message={message}/>}
+      <form className="edit-product-form" encType="multipart/form-data">
         <div className="edit-product-left">
           <div className="edit-product-input-container">
             <label htmlFor="name">Name</label>

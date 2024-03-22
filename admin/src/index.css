@@ -1,12 +1,11 @@
 
 @import './Components//Assets/LoginPage.css';
 @import './Components/Assets/Navbar.css';
-@import './Pages/Assets/ProductsPage.css';
-@import './Pages/Assets/OrdersPage.css';
 @import './Pages/Assets/ManageOrders.css';
 @import './Pages/Assets/ManageProduct.css';
+@import './Pages/Assets/TableList.css';
 
-*,input,label,div,h1,h2,h3,h4,h5,img,p,body,label,textarea,select {
+*,input,label,div,h1,h2,h3,h4,h5,img,p,td,tr,table,label,textarea,select {
   margin: 0;
   padding: 0;
 }

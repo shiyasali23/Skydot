@@ -37,6 +37,7 @@ def adminLogin(request):
 
 @api_view(['POST'])
 def createProduct(request):
+    print(request.data)
     if request.method == 'POST':
         try:
             serializer = ProductSerializer(data=request.data)
@@ -84,6 +85,23 @@ def updateProduct(request, pk):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['POST'])
+def uploadImage(request):
+    try:
+        data = request.data
+    
+        product_id = data['product_id']
+        product = Product.objects.get(_id=product_id)
+        
+        product.image = request.FILES.get('images')
+        product.save()
+        return Responce("image uploaded sucesfully")
+    except Exception as e:
+        print(e)
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
+        
 
 
 @api_view(['DELETE'])

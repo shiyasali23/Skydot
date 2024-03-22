@@ -26,18 +26,22 @@ class Product(models.Model):
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    name = models.CharField(max_length=200, unique=True, null=False, blank=False)
+    name = models.CharField(max_length=25, unique=True, null=False, blank=False)
     description = models.TextField(max_length=2000, null=False, blank=False)
     price = models.DecimalField(max_digits=10, decimal_places=1, null=False, blank=False)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=False, blank=False)
     tag = models.CharField(max_length=11, choices=TAG_CHOICES, null=True, blank=False)
     vote = models.IntegerField(default=0, null=True, blank=True)
+    total_sold = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     out_of_stock = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['-total_sold']
 
     
 class Stock(models.Model):

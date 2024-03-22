@@ -2,11 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./bootstrap.min.css";
 
 import LoginPage from "./Pages/LoginPage";
-import ProductsPage from "./Pages/ProductsPage.jsx";
 import OrdersPage from "./Pages/OrdersPage";
 import ManageOrders from "./Pages/ManageOrdersPage.jsx";
 import DashboardPage from "./Pages/DashboardPage";
 import ManageProductPage from "./Pages/ManageProductPage";
+import ProductsPage from "./Pages/ProductsPage.jsx";
 
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { OrdersProvider } from "./Contexts/OrdersContext.js";

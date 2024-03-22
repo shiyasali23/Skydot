@@ -36,18 +36,22 @@ class StockSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     stock = StockSerializer()
+    images = ProductImageSerializer() 
     
     class Meta:
         model = Product
         fields = '__all__'        
 
     def create(self, validated_data):
-        stock_data = validated_data.pop('stock')
-        image_data = validated_data.pop('images')
-        product = Product.objects.create(**validated_data)
-        stock = Stock.objects.create(product=product, **stock_data)
-        image = ProductImage.objects.create(product=product, **image_data)
-        return product
+        with transaction.atomic():
+            stock_data = validated_data.pop('stock', None)
+            image_data = validated_data.pop('images', None)
+            if stock_data is not None and image_data is not None:
+                product = Product.objects.create(**validated_data)
+                Stock.objects.create(product=product, **stock_data)
+                ProductImage.objects.create(product=product, **img_data)
+            else:
+                raise serializers.ValidationError("Stock data and images are required")
 
     
     

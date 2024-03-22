@@ -1,17 +1,14 @@
 from django.db.models.signals import post_save, post_delete, pre_save
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.db import transaction, IntegrityError
 
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist,ValidationError
 
 from .models import Order, OrderProduct, Review, Subscriber
-
-from adminpanel.serializers import ProductSerializer, StockSerializer, MessageSerializer
 from adminpanel.models import Message,Product,Stock
 
-from django.db.models import F
-from django.db.models import Sum
+from django.utils import timezone
 
 
 
@@ -45,32 +42,63 @@ def updateStock(sender, instance, created, **kwargs):
             product_data.out_of_stock = False
         product_data.save()
 
+@receiver(post_save, sender=OrderProduct)
+def update_total_sold(sender, instance, created, **kwargs):
+    if created:
+        try:
+            quantity = instance.quantity
+            product = instance.product
 
+            with transaction.atomic():
+                product_data = Product.objects.select_for_update().get(id=product.id)
+                product_data.total_sold += quantity
+                product_data.save()
+                
+        except Product.DoesNotExist:
+            print(f"Product does not exist with id: {product.id}")
+        except Exception as e:
+            print(f"Product Total sold updating failed for instance {instance.id}: {e}")
 
 @receiver(post_save, sender=Order)
-def createOrderMessage(sender, instance, created, **kwargs):
-    if created and instance.isWhatsapp:
+def notify_order(sender, instance, created, **kwargs):
+    try:
+        if instance.isWhatsapp and created:
+            customer = instance.customer
+            order_tracking_id = instance.tracking_id
+            phone_number = customer.phone_number
+
+            subscriber, created = Subscriber.objects.get_or_create(phone_number=phone_number, defaults={'name': customer.name})
+
+            message_body = f"Hello {customer.name}. Thank you for your order! Your order with tracking ID {order_tracking_id} has been placed successfully."
+            message_data = {
+                'body': message_body,
+                'to': 'customer',
+                'phone_number': phone_number
+            }
+            Message.objects.create(**message_data)
+    except Exception as e:
+        print(f"Order Messaging failed {instance.id}: {e}")
+
+    
+@receiver(post_save, sender=Order)
+def notify_delivery(sender, instance, **kwargs):
+    if instance.deliveredAt:
         try:
             customer = instance.customer
-            phone_number = customer.phone_number
-            name = customer.name
-            subscriber = Subscriber.objects.filter(phone_number=phone_number).first()
-            if not subscriber:
-                subscriber = Subscriber(name=name, phone_number=phone_number)
-                subscriber.save()
             order_tracking_id = instance.tracking_id
+            customer_name = customer.name
+            delivered_at = instance.deliveredAt.strftime('%d-%m-%Y %H:%M')
+            message_body = f"Hello {customer_name}! Your order with tracking id {order_tracking_id} was delivered successfully at {delivered_at}"
             message_data = {
-                'body': f"Thank you for your order! Your order with tracking ID {order_tracking_id} has been successfully placed.",
-                'to': 'customer',
-                'phone_number': instance.customer.phone_number
-            }
-            message_instance = Message(**message_data)
-            message_instance.save()
-            message_instance.receiver.add(subscriber)
+                        'body': message_body,
+                        'to': 'customer',
+                        'phone_number': customer.phone_number
+                    }
+            Message.objects.create(**message_data)
         except Exception as e:
-            print(e)
-            print(f"Error creating order Message: {e}")
+            print(f"Order delivered messaging failed {instance.id}: {e}")
 
+            
 
 
 @receiver(post_save, sender=Review)
@@ -136,31 +164,11 @@ def update_vote(sender, instance, **kwargs):
         except IntegrityError as e:
             print(f"IntegrityError: {e}")
  
-@receiver(post_save, sender=Order)           
-def updateDelivery(sender, instance, **kwargs):
-    if instance.deliveredAt and instance.isWhatsapp:
-        try:
-            customer_name = instance.customer.name
-            phone_number = instance.customer.phone_number              
-            order_tracking_id = instance.tracking_id
-            message_data = {
-                'body':f"Hello {customer_name}! Your order with tracking id {order_tracking_id} was delivered successfully at {instance.deliveredAt.strftime('%d-%m-%Y-%H-%M')}",
-                'to':'customer',
-                'phone_number': phone_number
-            }
-            try:
-                Message.objects.create(**message_data)
-            except Exception as e:
-                print(f"Error creating delivery Message: {e}")
-
-        except Exception as e:
-            print(f"Error creating delivery Message: {e}")
 
 
 
 
-post_save.connect(updateDelivery, sender=Order)
-post_save.connect(createOrderMessage, sender=Order)
-post_save.connect(notifyLowReview, sender=Review)
-post_save.connect(updateStock, sender=OrderProduct)
-post_save.connect(createWelcomeMessage, sender=Subscriber)
+    
+        
+
+

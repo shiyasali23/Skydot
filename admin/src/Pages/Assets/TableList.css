@@ -1,0 +1,54 @@
+.table {
+  margin: 10px auto;
+  /* border: 1px solid black; */
+}
+
+.table-thead {
+  border-bottom: 2px solid black;
+  /* border: 1px solid black; */
+  height: 10vh;
+ 
+}
+
+.table-row {
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.284);
+
+}
+
+.table-tbody{
+  
+}
+
+.table-header {
+  font-weight: 800;
+  font-size: 15px;
+  color: black;
+  letter-spacing: 2px;
+  text-align: center;
+  /* border: 1px solid black; */
+}
+.table-value {
+  font-weight: 400;
+  font-size: 15px;
+  color: black;
+  letter-spacing: 2px;
+  text-align: center;
+  /* border: 1px solid black; */
+ 
+}
+.table-add-bttn {
+  background-color: rgba(128, 128, 128, 0.146);
+  width: 80px;
+  font-size: 12px;
+  font-weight: 600;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+.product-table-image {
+  width: 70%;
+  height: 50px;
+}
