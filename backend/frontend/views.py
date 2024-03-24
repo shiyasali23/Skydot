@@ -79,6 +79,7 @@ def updateOrder(request, pk):
         except Order.DoesNotExist as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -156,6 +157,7 @@ def getOrderProduct(request, pk):
         serialized_order_product = OrderProductSerializer(order_product)
         return Response(serialized_order_product.data, status=status.HTTP_200_OK)
     except OrderProduct.DoesNotExist:
+        print(e)
         return Response("OrderProduct not found", status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(e)

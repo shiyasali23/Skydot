@@ -10,19 +10,17 @@ import ProductsPage from "./Pages/ProductsPage.jsx";
 
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { OrdersProvider } from "./Contexts/OrdersContext.js";
-import { AdminProvider } from "./Contexts/AuthenticationContext.js";
 
 function App() {
   return (
     <div className="App">
       <ProductsProvider>
         <OrdersProvider>
-          <AdminProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/manage-orders/:id" element={<ManageOrders />} />
+                <Route path="/edit-orders/:id" element={<ManageOrders />} />
 
                 <Route path="/products" element={<ProductsPage />} />
                 <Route
@@ -34,7 +32,6 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
               </Routes>
             </BrowserRouter>
-          </AdminProvider>
         </OrdersProvider>
       </ProductsProvider>
     </div>

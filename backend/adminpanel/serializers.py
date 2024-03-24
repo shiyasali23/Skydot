@@ -18,7 +18,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # ------------------------Product---------------------------
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    
     product = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = ProductImage

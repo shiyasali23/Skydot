@@ -8,7 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from .models import Order, OrderProduct, Review, Subscriber
 from adminpanel.models import Message,Product,Stock
 
-from django.utils import timezone
 
 
 

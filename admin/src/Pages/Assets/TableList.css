@@ -2,11 +2,13 @@
   margin: 10px auto;
   /* border: 1px solid black; */
 }
-
+.error-message{
+  margin: 20% 25%;
+}
 .table-thead {
   border-bottom: 2px solid black;
   /* border: 1px solid black; */
-  height: 10vh;
+  height: 12vh;
  
 }
 

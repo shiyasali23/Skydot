@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Customer, Subscriber, Order, OrderProduct, Review
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ValidationError
+from adminpanel.serializers import ProductSerializer
 
 
 # ------------------Customer-----------------------------
@@ -15,9 +16,14 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 # --------------------Order------------------------------
 class OrderProductSerializer(serializers.ModelSerializer):
+    product_name = serializers.SerializerMethodField()
+    
     class Meta:
         model = OrderProduct
         fields = '__all__'
+        
+    def get_product_name(self, obj):
+        return obj.product.name
    
     
 

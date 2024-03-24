@@ -6,43 +6,39 @@ export const productsContext = createContext();
 export const ProductsProvider = ({ children }) => {
   const [productsArray, setProductsArray] = useState([]);
   const [message, setMessage] = useState("");
-  const [loadingDelete, setLoadingDelete] = useState("");
-  const [loadingCreate, setLoadingCreate] = useState("");
-  const [errorDelete, seterrorDelete] = useState("");
-  const [errorCreate, seterrorCreate] = useState("");
-  const [loading, setloading] = useState("");
-  const [error, setError] = useState("");
 
-  const fetchProducts = async () => {
+
+  useEffect(()=>{
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      fetchProducts(storedToken)
+    }
+  },[])
+
+
+  const fetchProducts = async (token) => {
+    setMessage(null);
     try {
-      const storedToken = localStorage.getItem("token");
       const response = await axios.get("/api/adminpanel/products", {
         headers: {
-          Authorization: `Bearer ${storedToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const products = response.data;
       setProductsArray(products);
     } catch (error) {
       if (error.response.status === 401) {
-        setMessage("Authentication error: Please login again.");
-        console.error("Authentication error", error);
+        setMessage("Authentication error Please login again.");
       } else if (error.response.status === 500) {
         setMessage("Internal server error");
-        console.error("Internal server error", error);
       } else {
         setMessage("An unknown error occurred");
-        console.error("Error", error);
       }
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   const updateProduct = async (product) => {
-    console.log(product);
+    setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.post("/api/adminpanel/products", product, {
@@ -55,19 +51,16 @@ export const ProductsProvider = ({ children }) => {
     } catch (error) {
       if (error.response.status === 401) {
         setMessage("Authentication error: Please login again.");
-        console.error("Authentication error", error);
       } else if (error.response.status === 500) {
         setMessage("Internal server error");
-        console.error("Internal server error", error);
       } else {
         setMessage("An unknown error occurred");
-        console.error("Error", error);
       }
     }
   };
 
   const registerProduct = async (product) => {
-    console.log(product);
+    setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.post(
@@ -99,13 +92,8 @@ export const ProductsProvider = ({ children }) => {
       value={{
         productsArray,
         message,
-        loadingDelete,
-        errorDelete,
-        loadingCreate,
-        errorCreate,
-        error,
-        loading,
 
+        setMessage,
         updateProduct,
         fetchProducts,
         registerProduct,

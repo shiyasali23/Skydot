@@ -1,30 +1,61 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Message from "../Components/Message";
-import { AdminContext } from "../Contexts/AuthenticationContext";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ordersContext } from "../Contexts/OrdersContext";
+import { productsContext } from "../Contexts/ProductsContext";
 
 const LoginPage = () => {
-  const { fetchAdminLogin, message } = useContext(AdminContext); 
-  const storedToken = localStorage.getItem("token");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (storedToken) {
-      navigate("/orders"); 
-    }
-  }, [storedToken, navigate]);
-
+  const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const {fetchOrders} = useContext(ordersContext);
+  const {fetchProducts} = useContext(productsContext);
+  
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      navigate("/orders");
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    fetchAdminLogin(username, password);
+    setMessage(null)
+    try {
+      const response = await axios.post(
+        "/api/adminpanel/login/",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
+      const token = response.data['access']
+      localStorage.setItem("token", token);
+      fetchOrders(token)
+      fetchProducts(token)
+      navigate("/orders");
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setMessage("Invalid username or password");
+      } else if (error.response && error.response.status === 500) {
+        setMessage("Internal server error");
+      } else {
+        setMessage("An error occurred while logging in.");
+      }
+    }
   };
 
   return (
     <div className="login-page">
-      {message && <Message message={message} />}
+      {message && <Message message={message} setMessage={setMessage}/>}
       <form className="login-form" noValidate onSubmit={handleSubmit}>
         <div className="login-form-group">
           <input

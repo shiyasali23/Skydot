@@ -5,65 +5,79 @@ export const ordersContext = createContext();
 
 export const OrdersProvider = ({ children }) => {
   const [ordersArray, setOrdersArray] = useState([]);
-  const [message, setMessage] = useState("");
-  
+  const [message, setMessage] = useState(null);
 
-  const fetchOrders = async () => {
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      fetchOrders(storedToken);
+    }
+  }, []);
+
+  const fetchOrders = async (token) => {
+    setMessage(null);
     try {
-      const storedToken = localStorage.getItem('token')
       const response = await axios.get("/api/frontend/orders", {
         headers: {
-          Authorization: `Bearer ${storedToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const orders = response.data;
       setOrdersArray(orders);
+      return { ordersArray: orders };
     } catch (error) {
       if (error.response.status === 401) {
         setMessage("Authentication error Please login again.");
-        console.log(error);
       } else if (error.response.status === 500) {
         setMessage("Internal server error");
-        console.log(error);
       } else {
         setMessage("An unknown error occurred");
-        console.log(error);
       }
-    } 
+    }
+    return { success: false, errorMessage: message };
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const updateOrder = async (order) => {
-    setMessage("");
+    setMessage(null);
     try {
-      const storedToken = localStorage.getItem("token");  
-      const response = await axios.put(`/api/frontend/order/update/${order.id}/`, order, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
+      const storedToken = localStorage.getItem("token");
+      const response = await axios.put(
+        `/api/frontend/order/update/${order.id}/`,
+        order,
+        {
+          headers: {
+            Authorization: `Bearer`, 
+          },
+        }
+      );
+      const updatedOrder = response.data;
+      setOrdersArray((prevArray) => {
+        return prevArray.map((order) => {
+          if (order.id === updatedOrder.id) {
+            return updatedOrder;
+          } else {
+            return order;
+          }
+        });
       });
-  
-      const data = response.data;
-      console.log(data);
+
+      return { success: true, load:false };
     } catch (error) {
-      if (error.response.status === 404) {
-        setMessage("Order not found");
-        console.log(error);
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-        console.log(error);
+      if (error.response && error.response.status === 500) {
+        return { success: false, load: "Server Error. Try Again" };
+      } else if (error.response && error.response.status === 401) {
+        return { success: false, load: "Unauthorized, Login Again" };
       } else {
-        setMessage("An unknown error occurred");
-        console.log(error);
+
+        return { success: false, load: "An Unknown Error Occurred" };
       }
-    } 
+    }
   };
 
   return (
-    <ordersContext.Provider value={{ ordersArray, message, updateOrder,fetchOrders }}>
+    <ordersContext.Provider
+      value={{ ordersArray, message, updateOrder, fetchOrders }}
+    >
       {children}
     </ordersContext.Provider>
   );

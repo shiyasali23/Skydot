@@ -6,49 +6,47 @@ import Message from "../Components/Message";
 
 const EditProductPage = () => {
   const { id } = useParams();
-  const { productsArray,message, registerProduct, updateProduct } =
+  const { productsArray, message, registerProduct, updateProduct, setMessage } =
     useContext(productsContext);
 
-    const [product, setProduct] = useState(null);
-    const navigate = useNavigate();
-    
-    useEffect(() => {
-      if (id) {
-        const foundProduct = productsArray.find((product) => product.id === id);
-        if (foundProduct) {
-          setProduct(foundProduct);
-        } else {
-          setProduct(null); 
-        }
-      }
-      
-      const storedToken = localStorage.getItem("token");
-      if (!storedToken) {
-        navigate("/");
-      }
-    }, [productsArray, id, navigate]);
-    
+  const [product, setProduct] = useState(null);
+  const navigate = useNavigate();
 
-    const handleImageChange = (e, imageKey) => {
-      if (product) {
-        // If product exists, update the images
-        setProduct((prevProduct) => ({
-          ...prevProduct,
-          images: {
-            ...prevProduct.images,
-            [imageKey]: e.target.files[0]
-          },
-        }));
+  useEffect(() => {
+    if (id) {
+      const foundProduct = productsArray.find((product) => product.id === id);
+      if (foundProduct) {
+        setProduct(foundProduct);
       } else {
-        setProduct({
-          images: {
-            [imageKey]: e.target.files[0],
-          },
-        });
+        setProduct(null);
       }
-    };
- 
-    const handleSubmit = (e) => {
+    }
+
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/");
+    }
+  }, [productsArray, id, navigate]);
+
+  const handleImageChange = (e, imageKey) => {
+    if (product) {
+      setProduct((prevProduct) => ({
+        ...prevProduct,
+        images: {
+          ...prevProduct.images,
+          [imageKey]: e.target.files[0],
+        },
+      }));
+    } else {
+      setProduct({
+        images: {
+          [imageKey]: e.target.files[0],
+        },
+      });
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (id) {
       updateProduct(product);
@@ -56,16 +54,22 @@ const EditProductPage = () => {
       registerProduct(product);
     }
   };
+
+  console.log(productsArray);
   return (
-    <div className="edit-product-page">
+    <div className="product-page">
       <NavBar />
-{message && <Message message={message}/>}
-      <form className="edit-product-form" encType="multipart/form-data">
-        <div className="edit-product-left">
-          <div className="edit-product-input-container">
+      {message && <Message message={message} setMessage={setMessage} />}
+      <form className="product-form" encType="multipart/form-data">
+        <div className="product-input-left">
+
+          <div className="product-input-left-top">
+        
+
+          <div className="product-input-container">
             <label htmlFor="name">Name</label>
             <input
-              className="edit-product-input edit-product-input-large"
+              className="product-input product-input-large"
               type="text"
               name="name"
               placeholder="Name"
@@ -79,11 +83,11 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="address">Description</label>
             <textarea
               style={{ height: "100px" }}
-              className="edit-product-input edit-product-input-large"
+              className="product-input product-input-large"
               name="description"
               placeholder="Description"
               value={product?.description ?? ""}
@@ -95,65 +99,79 @@ const EditProductPage = () => {
               }
             ></textarea>
           </div>
+          </div>
 
-          <div className="edit-product-input-container">
+       <div className="product-input-left-bottom">
+       <div className="product-input-image-container">
             <label htmlFor="mainImage">Main Image</label>
             <input
-              className="edit-product-image-input"
+              className="product-image-input"
               type="file"
               name="mainImage"
               accept="image/*"
               onChange={(e) => handleImageChange(e, "main_image")}
             />
+<img className="product-input-image" src={product?.images?.main_image ?? null} alt="" />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-image-container">
             <label htmlFor="subImage1">Sub Image 1</label>
             <input
-              className="edit-product-image-input"
+              className="product-image-input"
               type="file"
               id="sub_image_1"
               name="sub_image_1"
               accept="image/*"
               onChange={(e) => handleImageChange(e, "sub_image_1")}
             />
+            <img className="product-input-image" src={product?.images?.sub_image_1 ?? null} alt="" />
+
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-image-container">
             <label htmlFor="subImage1">Sub Image 2</label>
             <input
-              className="edit-product-image-input"
+              className="product-image-input"
               type="file"
               id="sub_image_2"
               name="sub_image_2"
               accept="image/*"
               onChange={(e) => handleImageChange(e, "sub_image_2")}
             />
+            <img className="product-input-image" src={product?.images?.sub_image_2 ?? null} alt="" />
+
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-image-container">
             <label htmlFor="subImage1">Sub Image 3</label>
             <input
-              className="edit-product-image-input"
+              className="product-image-input"
               type="file"
               id="sub_image_3"
               name="sub_image_3"
               accept="image/*"
               onChange={(e) => handleImageChange(e, "sub_image_3")}
             />
+            <img className="product-input-image" src={product?.images?.sub_image_3 ?? null} alt="" />
+
           </div>
 
-          <div className="edit-product-input-container">
-            <label htmlFor="vote">Vote</label>
-            <h5>{product?.vote ?? ""}</h5>
-          </div>
+       </div>
+
+         
+          
         </div>
 
-        <div className="edit-product-right">
-          <div className="edit-product-input-container">
+        <div className="product-right">
+
+        <div className="product-input-container">
+            {product && <h5>Positive Rating {product.vote ?? ""}%</h5>}
+          </div>
+
+          <div className="product-input-container">
             <label htmlFor="stockXS">Stock XS</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               placeholder="Stock XS"
               name="stock_XS"
@@ -170,10 +188,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="stockS">Stock S</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               placeholder="Stock S"
               name="stock_S"
@@ -190,10 +208,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="stockM">Stock M</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               placeholder="Stock M"
               name="stock_M"
@@ -210,10 +228,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="stockL">Stock L</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               placeholder="Stock L"
               name="stock_L"
@@ -230,10 +248,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="stockXL">Stock XL</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               placeholder="Stock XL"
               name="stock_XL"
@@ -250,10 +268,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="price">Price</label>
             <input
-              className="edit-product-input"
+              className="product-input"
               type="number"
               name="price"
               placeholder="Price"
@@ -264,10 +282,10 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="tag">Tag</label>
             <select
-              className="edit-product-select"
+              className="product-select"
               id="tag"
               name="tag"
               value={product?.tag ?? ""}
@@ -278,10 +296,10 @@ const EditProductPage = () => {
             </select>
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="category">Category</label>
             <select
-              className="edit-product-select"
+              className="product-select"
               id="category"
               name="category"
               value={product?.category ?? ""}
@@ -295,10 +313,10 @@ const EditProductPage = () => {
             </select>
           </div>
 
-          <div className="edit-product-input-container">
+          <div className="product-input-container">
             <label htmlFor="gender">Gender</label>
             <select
-              className="edit-product-select"
+              className="product-select"
               id="gender"
               name="gender"
               value={product?.gender ?? ""}
@@ -312,7 +330,7 @@ const EditProductPage = () => {
             </select>
           </div>
           <button
-            className="save-edit-product-button"
+            className="save-product-button"
             type="submit"
             onClick={handleSubmit}
           >
