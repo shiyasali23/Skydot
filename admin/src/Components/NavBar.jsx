@@ -1,44 +1,44 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, useNavigate } from "react-router-dom"; 
 import Message from "./Message";
 
-
-const NavBar = ({message, setMesssage}) => {
-
-  const navigate =useNavigate()
+const NavBar = ({ message, setMesssage }) => {
+  const navigate = useNavigate();
 
   const logOut = () => {
-    localStorage.removeItem("token"); 
-    navigate("/")
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   return (
     <div className="nav-bar">
-      <h1 className="nav-logo">
-        Skydot <span style={{fontSize:'15px',letterSpacing:'6px'}}></span>
-      </h1>
-      {message && <Message message={message} setMesssage={setMesssage} />}
+      <div className="nav-left">
+        <h1 className="nav-logo">Skydot</h1>
 
-      <div className="nav-list">
-        
-        <Link style={{ textDecoration: "none", margin:0,padding:0 }} to="/">
-          <h4 className="nav-item">Orders<p className="line"></p> </h4>      
-        </Link>
-       
-        <Link style={{ textDecoration: "none" }} to="/products">
-          <h4 className="nav-item">Products<p className="line"></p> </h4>
-        </Link>
-       
         <Link style={{ textDecoration: "none" }} to="/dashboard">
-          <h4 className="nav-item">Dashboard<p className="line"></p> </h4>
+        <i class="fa-solid fa-chart-simple" style={{fontSize:'23px',cursor:'pointer'}}></i>
         </Link>
-       
         <Link style={{ textDecoration: "none" }} to="/notification">
-        <i className="fa-solid fa-bell"></i>
-        </Link> 
-        
-        <i className="fa-solid fa-right-from-bracket" onClick={logOut}></i>
-      
+          <i className="fa-solid fa-bell" style={{fontSize:'23px',cursor:'pointer'}}></i>
+        </Link>
+
+      </div>
+
+      <div className="nav-right">
+        <Link style={{ textDecoration: "none", margin: 0, padding: 0 }} to="/">
+          <h4 className="nav-item">
+            Orders<p className="line"></p>{" "}
+          </h4>
+        </Link>
+
+        <Link style={{ textDecoration: "none" }} to="/products">
+          <h4 className="nav-item">
+            Products<p className="line"></p>{" "}
+          </h4>
+        </Link>
+
+        <i className="fa-solid fa-right-from-bracket" style={{fontSize:'20px',color:'black',cursor:'pointer'}} onClick={logOut}></i>
+
       </div>
     </div>
   );

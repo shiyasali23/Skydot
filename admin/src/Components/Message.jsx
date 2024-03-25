@@ -10,12 +10,12 @@ const Message = ({ message, setMessage }) => {
       <div
         style={{
           backgroundColor: "rgba(255, 0, 0, 0.75)",
-          width: "25%",
-          height: "12%",
+          width: "20%",
+          height: "10%",
           color: "white",
           position: "fixed",
           top: "8%",
-          left: "50%",
+          left: "47%",
           transform: "translate(-50%, -50%)",
           zIndex: "999",
           borderRadius: "5px",
@@ -27,18 +27,18 @@ const Message = ({ message, setMessage }) => {
         }}
         className="message-component"
       >
-        <h3
+        <p
           style={{ textAlign: "center", color: "white", fontSize: "15px" }}
           className="message-component-text"
         >
           {message}
-        </h3>
+        </p>
 
         <i
           style={{
             color: "white",
             cursor: "pointer",
-            fontSize: "15px",
+            fontSize: "12px",
             fontWeight:'900'
           }}
           onClick={onClose}

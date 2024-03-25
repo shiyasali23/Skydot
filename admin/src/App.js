@@ -10,6 +10,7 @@ import ProductsPage from "./Pages/ProductsPage.jsx";
 
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { OrdersProvider } from "./Contexts/OrdersContext.js";
+import NotificationPage from "./Pages/NotificationPage.jsx";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/add-product" element={<ManageProductPage />} />
 
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/notification" element={<NotificationPage />} />
               </Routes>
             </BrowserRouter>
         </OrdersProvider>

@@ -9,6 +9,8 @@ const OrdersPage = () => {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem("token");
 
+  const unMovedOrders = ordersArray.filter(order => order.status === 'processing').length;
+
   useEffect(() => {
     if (!storedToken) {
       navigate("/");
@@ -26,7 +28,7 @@ const OrdersPage = () => {
         ) : (
           <>
             <thead className="table-thead">
-              <tr>
+              <tr className="table-tr">
                 <th className="table-header">Date</th>
                 <th className="table-header">Tracking ID</th>
                 <th className="table-header">Quantity</th>
@@ -35,7 +37,9 @@ const OrdersPage = () => {
                 <th className="table-header">Delivered</th>
                 <th className="table-header">Status</th>
                 <th className="table-header">
-                  <i className="fa-solid fa-truck-fast"></i>
+                <p style={{ fontSize:'15px',color:'red',margin:"0",padding:'0',width:'40%',height:'100%',textAlign:'center'}}>{unMovedOrders>0?unMovedOrders:''}</p>
+                  <i className="fa-solid fa-truck-fast"> </i>
+                 
                 </th>
               </tr>
             </thead>

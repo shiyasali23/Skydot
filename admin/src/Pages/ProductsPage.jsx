@@ -8,6 +8,8 @@ function ProductsPage() {
   const storedToken = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  const outOfStock = productsArray.filter(product => product.out_of_stock).length;
+
   useEffect(() => {    
     if (!storedToken) {
       navigate("/");
@@ -31,7 +33,10 @@ function ProductsPage() {
                 <th className="table-header">Price</th>
                 <th className="table-header">Rating</th>
                 <th className="table-header">Total Sold</th>
-                <th className="table-header">In Stock</th>
+                <th className="table-header">
+                <p style={{ fontSize:'15px',color:'red',margin:"0",padding:'0',width:'40%',height:'100%',textAlign:'center'}}>{outOfStock>0?outOfStock:''}</p>
+
+                  In Stock</th>
                 <th className="table-header">
                   <Link
                     style={{

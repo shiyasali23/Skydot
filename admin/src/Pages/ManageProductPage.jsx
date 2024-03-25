@@ -291,6 +291,7 @@ const EditProductPage = () => {
               value={product?.tag ?? ""}
               onChange={(e) => setProduct({ ...product, tag: e.target.value })}
             >
+              <option value={product?.tag}>{product?.tag}</option>
               <option value="featured">Featured</option>
               <option value="new-arrival">New Arrival</option>
             </select>
@@ -307,6 +308,7 @@ const EditProductPage = () => {
                 setProduct({ ...product, category: e.target.value })
               }
             >
+              <option value={product?.category}>{product?.category}</option>
               <option value="shirt">Shirt</option>
               <option value="t-shirt">T-shirt</option>
               <option value="pants">Pants</option>
@@ -324,6 +326,7 @@ const EditProductPage = () => {
                 setProduct({ ...product, gender: e.target.value })
               }
             >
+              <option value={product?.gender}>{product?.gender}</option>
               <option value="men">Men</option>
               <option value="women">Women</option>
               <option value="unisex">Unisex</option>

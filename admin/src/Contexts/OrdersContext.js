@@ -46,7 +46,7 @@ export const OrdersProvider = ({ children }) => {
         order,
         {
           headers: {
-            Authorization: `Bearer`, 
+            Authorization: `Bearer `, 
           },
         }
       );
