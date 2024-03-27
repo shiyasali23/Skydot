@@ -1,30 +1,29 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, Children } from "react";
 import axios from "axios";
 
-export const ordersContext = createContext();
+export const notificationContext = createContext();
 
-export const OrdersProvider = ({ children }) => {
-  const [ordersArray, setOrdersArray] = useState([]);
+export const NotificationProvider = ({ children }) => {
+  const [notificationsArray, setNotificationsArray] = useState([]);
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
-      fetchOrders(storedToken);
+      fetchNotifications(storedToken);
     }
   }, []);
 
-  const fetchOrders = async (token) => {
+  const fetchNotifications = async (storedToken) => {
     setMessage(null);
     try {
-      const response = await axios.get("/api/frontend/orders", {
+      const response = await axios.get("/api/adminpanel/messages", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
         },
       });
-      const orders = response.data;
-      setOrdersArray(orders);
-      return { ordersArray: orders };
+      const notifications = response.data;
+      setNotificationsArray(notifications);
     } catch (error) {
       if (error.response.status === 401) {
         setMessage("Authentication error Please login again.");
@@ -35,34 +34,33 @@ export const OrdersProvider = ({ children }) => {
         setMessage("An unknown error occurred");
       }
     }
-    return { success: false, errorMessage: message };
   };
 
-  const updateOrder = async (order) => {
+  const updateNotification = async (id) => {
     setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.put(
-        `/api/frontend/order/update/${order.id}/`,
-        order,
+        `/api/adminpanel/message/update/${id}/`,
+        {
+          seen: true,
+        },
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
         }
       );
-      const updatedOrder = response.data;
-      setOrdersArray((prevArray) => {
-        return prevArray.map((order) => {
-          if (order.id === updatedOrder.id) {
-            return updatedOrder;
-          } else {
-            return order;
-          }
-        });
-      });
+      const updatedNotification = response.data;
+      setNotificationsArray((prevArray) => prevArray.map((notification) => {
+        if (notification.id === updatedNotification.id) {
+          return updatedNotification;
+        } else {
+          return notification;
+        }
+      }));
 
-      return { success: true, load: false };
+      return { notificationsArray };
     } catch (error) {
       if (error.response && error.response.status === 500) {
         return { success: false, load: "Server Error. Try Again" };
@@ -75,10 +73,10 @@ export const OrdersProvider = ({ children }) => {
   };
 
   return (
-    <ordersContext.Provider
-      value={{ ordersArray, message, updateOrder, fetchOrders }}
+    <notificationContext.Provider
+      value={{ notificationsArray, message, setMessage, updateNotification, }}
     >
       {children}
-    </ordersContext.Provider>
+    </notificationContext.Provider>
   );
 };

@@ -1,12 +1,16 @@
 
-@import './Components//Assets/LoginPage.css';
+@import './Pages/Assets/LoginPage.css';
 @import './Components/Assets/Navbar.css';
 @import './Pages/Assets/ManageOrders.css';
 @import './Pages/Assets/ManageProduct.css';
 @import './Pages/Assets/TableList.css';
+@import './Pages/Assets/Notification.css';
 
 *,input,label,div,h1,h2,h3,h4,h5,img,p,td,tr,table,label,textarea,select {
   margin: 0;
   padding: 0;
 }
 
+.error-message{
+  margin: 20% 25%;
+}

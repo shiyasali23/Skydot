@@ -7,16 +7,19 @@ import ManageOrders from "./Pages/ManageOrdersPage.jsx";
 import DashboardPage from "./Pages/DashboardPage";
 import ManageProductPage from "./Pages/ManageProductPage";
 import ProductsPage from "./Pages/ProductsPage.jsx";
+import NotificationPage from "./Pages/NotificationPage.jsx";
 
 import { ProductsProvider } from "./Contexts/ProductsContext";
 import { OrdersProvider } from "./Contexts/OrdersContext.js";
-import NotificationPage from "./Pages/NotificationPage.jsx";
+import { NotificationProvider } from "./Contexts/NotificationContext.js";
+
 
 function App() {
   return (
     <div className="App">
       <ProductsProvider>
         <OrdersProvider>
+          <NotificationProvider>
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<LoginPage />} />
@@ -34,6 +37,7 @@ function App() {
                 <Route path="/notification" element={<NotificationPage />} />
               </Routes>
             </BrowserRouter>
+            </NotificationProvider>
         </OrdersProvider>
       </ProductsProvider>
     </div>

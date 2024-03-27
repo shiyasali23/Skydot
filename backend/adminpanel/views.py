@@ -144,7 +144,7 @@ def getProduct(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
+# -----------------------------Messages------------------------
 
 @api_view(['POST'])
 def createMessage(request):
@@ -160,13 +160,27 @@ def createMessage(request):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+ 
+@api_view(['PUT'])
+def updateMessage(request, pk):
+    if request.method == 'PUT':
+        try:
+            message = Message.objects.get(id=pk)
+            serializer = MessageSerializer(message, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Message.DoesNotExist as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 
 @api_view(['GET'])
 def getMessages(request):
     try:
-        Messages = Message.objects.all()
+        Messages = Message.objects.filter(to='admin') 
         serialized_Messages = MessageSerializer(Messages, many=True)
         return Response(serialized_Messages.data, status=status.HTTP_200_OK)
     except Exception as e:

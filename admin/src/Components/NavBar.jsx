@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import Message from "./Message";
 
-const NavBar = ({ message, setMesssage }) => {
+const NavBar = ({ }) => {
   const navigate = useNavigate();
 
   const logOut = () => {
@@ -16,7 +16,7 @@ const NavBar = ({ message, setMesssage }) => {
         <h1 className="nav-logo">Skydot</h1>
 
         <Link style={{ textDecoration: "none" }} to="/dashboard">
-        <i class="fa-solid fa-chart-simple" style={{fontSize:'23px',cursor:'pointer'}}></i>
+        <i className="fa-solid fa-chart-simple" style={{fontSize:'23px',cursor:'pointer'}}></i>
         </Link>
         <Link style={{ textDecoration: "none" }} to="/notification">
           <i className="fa-solid fa-bell" style={{fontSize:'23px',cursor:'pointer'}}></i>

@@ -11,6 +11,7 @@ urlpatterns = [
     path('product/delete/<str:pk>/', views.deleteProduct, name="delete-product"),
 
     path('message/create/', views.createMessage, name="create-message"),
+    path('message/update/<str:pk>/', views.updateMessage, name="update-message"),
     path('messages/', views.getMessages, name="all-messages"),
     path('message/<str:pk>/', views.getMessage, name="message"),
 

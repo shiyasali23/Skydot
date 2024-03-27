@@ -108,10 +108,9 @@ def notifyLowReview(sender, instance, created, **kwargs):
             product = instance.orderProduct.product
             review_body = instance.body
             
-            message_body = f"{product.name} received 1 star. "
-            message_body += f"Review: {review_body}" if review_body else "Reason not provided."
+            message_body = f"{product.name} received 1 star.({product.vote}% positive votes.) "
+            message_body += f"Because {review_body}" if review_body else ""
             message_body += f" You can contact {customer.name} at {customer.phone_number}."
-            message_body += f" (This product has {product.vote}% positive votes.)"
             
             message_data = {
                 'body': message_body,

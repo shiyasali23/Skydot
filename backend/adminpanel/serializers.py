@@ -76,7 +76,15 @@ class ProductSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = '__all__'
+        exclude = ['created', 'phone_number', 'to']
+        
+    def update(self, instance, validated_data):
+        if 'seen' in validated_data:
+            instance.seen = validated_data['seen']
+            instance.save()
+            return instance
+        else:
+            raise serializers.ValidationError("Correct field(s) to update the message.")
 
     
     
