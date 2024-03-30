@@ -29,32 +29,36 @@ const NotificationPage = () => {
   return (
     <div className="notification-page">
       <NavBar />
-      {message && <Message message={message} setMessage={setMessage} />}
-      <div className="notification-wrapper">
-        {message ? (
-          <h3 className="error-message">{message}</h3>
-        ) : (
-          notificationsArray.map((notification, index) => (
-            <div key={index} className="notification-container">
-              <p className="notification-text">{notification.body}</p>
-              {notification.seen ? (
-                <div className="disabled-seen-button">
-                  <div />
+      {!notificationsArray.length ? (
+        <h2 className="error-message">Internal Server Error</h2>
+      ) : (
+        <>
+          {message && <Message message={message} setMessage={setMessage} />}
+  
+          <div className="notification-wrapper">
+            {notificationsArray.map((notification, index) => (
+                <div key={index} className="notification-container">
+                  <p className="notification-text">{notification.body}</p>
+                  {notification.seen ? (
+                    <div className="disabled-seen-button">
+                      <div />
+                    </div>
+                  ) : (
+                    <button
+                      className="notification-seen-button"
+                      onClick={() => handleSeen(notification.id)}
+                    >
+                      Seen
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <button
-                  className="notification-seen-button"
-                  onClick={() => handleSeen(notification.id)}
-                >
-                  Seen
-                </button>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+              ))}
+          </div>
+        </>
+      )}
     </div>
   );
+  
 };
 
 export default NotificationPage;

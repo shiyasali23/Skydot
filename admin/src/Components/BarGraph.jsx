@@ -1,16 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const BarGraph = ({ data,heading }) => {
+const BarGraph = ({ data,heading,canvasID,backgroundColor,borderColor, indexAxis}) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
+
+    let newChart = null;
+
     if (data) {
       if (chartRef.current !== null) {
         chartRef.current.destroy(); 
       }
 
-      const ctx = document.getElementById('barGraph');
+      const ctx = document.getElementById(`barGraph${canvasID}`);
       const maxValue = Math.max(...data.values);
       const newChart = new Chart(ctx, {
         type: 'bar',
@@ -19,12 +22,13 @@ const BarGraph = ({ data,heading }) => {
           datasets: [{
             label: `${heading}`,
             data: data.values,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: `${backgroundColor}`,
+            borderColor: `${borderColor}`,
             borderWidth: 1
           }]
         },
         options: {
+          indexAxis: `${indexAxis}`, 
           scales: {
             y: {
               beginAtZero: true,
@@ -32,13 +36,21 @@ const BarGraph = ({ data,heading }) => {
             }
           }
         }
-      });
+      })
 
       chartRef.current = newChart; 
     }
-  }, [data,heading]);
 
-  return <canvas  id="barGraph" />;
+    return () => {
+      if (newChart !== null) {
+        newChart.destroy();
+      }
+    };
+  }, [data,heading,canvasID]);
+
+  return <canvas  id={`barGraph${canvasID}`} />;
 };
 
 export default BarGraph;
+
+

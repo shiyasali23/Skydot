@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
+import React, { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
 
-const LineGraph = ({ data, heading, canvasId }) => {
+const LineGraph = ({ data, heading, canvasId, borderColor }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -14,28 +14,35 @@ const LineGraph = ({ data, heading, canvasId }) => {
 
       const ctx = document.getElementById(`lineGraph${canvasId}`);
       newChart = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
           labels: data.labels,
-          datasets: [{
-            label: `${heading}`,
-            data: data.values,
-            fill: false,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            tension: 0.1,
-            yAxisID: 'y-axis-1',
-          }]
+          datasets: [
+            {
+              label: `${heading}`,
+              data: data.values,
+              fill: false,
+              borderColor: `${borderColor}`,
+              tension: 0.1,
+              yAxisID: "y-axis-1",
+            },
+          ],
         },
         options: {
           scales: {
-            yAxes: [{
-              type: 'linear',
-              display: true,
-              position: 'left',
-              id: 'y-axis-1',
-            }]
-          }
-        }
+            yAxes: [
+              {
+                type: "linear",
+                display: true,
+                position: "left",
+                id: "y-axis-1",
+                grid: {
+                  display: false,
+                },
+              },
+            ],
+          },
+        },
       });
 
       chartRef.current = newChart;

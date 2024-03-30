@@ -20,10 +20,10 @@ function ProductsPage() {
   return (
     <div>
       <NavBar />
-      <table className="table">
-        {message ? (
-          <h2 className="error-message">{message}</h2>
-        ) : (
+      {message ? (
+        <h2 className="error-message">{message}</h2>
+      ) : (
+        <table className="table">
           <>
             <thead className="table-thead">
               <tr>
@@ -34,9 +34,9 @@ function ProductsPage() {
                 <th className="table-header">Rating</th>
                 <th className="table-header">Total Sold</th>
                 <th className="table-header">
-                <p style={{ fontSize:'15px',color:'red',margin:"0",padding:'0',width:'40%',height:'100%',textAlign:'center'}}>{outOfStock>0?outOfStock:''}</p>
-
-                  In Stock</th>
+                  <p style={{ fontSize:'15px',color:'red',margin:"0",padding:'0',width:'40%',height:'100%',textAlign:'center'}}>{outOfStock>0?outOfStock:''}</p>
+                  In Stock
+                </th>
                 <th className="table-header">
                   <Link
                     style={{
@@ -53,7 +53,7 @@ function ProductsPage() {
                 </th>
               </tr>
             </thead>
-
+  
             <tbody className="table-tbody">
               {productsArray.map((product, index) => (
                 <tr className="table-row" key={product.id}>
@@ -93,10 +93,11 @@ function ProductsPage() {
               ))}
             </tbody>
           </>
-        )}
-      </table>
+        </table>
+      )}
     </div>
   );
+  
 }
 
 export default ProductsPage;

@@ -1,11 +1,11 @@
 
-@import './Pages/Assets/LoginPage.css';
-@import './Components/Assets/Navbar.css';
-@import './Pages/Assets/ManageOrders.css';
-@import './Pages/Assets/ManageProduct.css';
-@import './Pages/Assets/TableList.css';
-@import './Pages/Assets/Notification.css';
-@import './Pages/Assets/Analytics.css';
+@import "./CSS/Analytics.css";
+@import './CSS/LoginPage.css';
+@import './CSS/ManageOrders.css';
+@import './CSS/ManageProduct.css';
+@import './CSS/Navbar.css';
+@import './CSS/Notification.css';
+@import './CSS/TableList.css';
 
 *,input,label,div,h1,h2,h3,h4,h5,img,p,td,tr,table,label,textarea,select {
   margin: 0;

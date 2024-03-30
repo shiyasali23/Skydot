@@ -15,6 +15,10 @@ const ManageOrders = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/");
+    }
     setOrder(ordersArray.find((order) => order.id === id));
   }, [ordersArray, id]);
 
