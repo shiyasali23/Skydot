@@ -1,0 +1,20 @@
+.analytics-wrapper {
+  height: 83vh;
+  width: 90%;
+  margin: 10px auto;
+  border: 3px solid rgba(128, 128, 128, 0.5);
+}
+
+.analytics-wrapper-section {
+  width: 100%;
+  height: 50%;
+  /* border: 1px solid grey; */
+  display: flex;
+}
+
+.analytics-container {
+  width: 50%;
+  height: 100%;
+  border: 0.5px solid rgba(128, 128, 128, 0.5);
+  padding: 10px 10px;
+}

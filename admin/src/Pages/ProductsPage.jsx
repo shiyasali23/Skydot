@@ -14,7 +14,7 @@ function ProductsPage() {
     if (!storedToken) {
       navigate("/");
     }
-  });
+  },[]);
 
 
   return (

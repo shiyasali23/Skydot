@@ -1,8 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; 
-import Message from "./Message";
 
-const NavBar = ({ }) => {
+const NavBar = () => {
   const navigate = useNavigate();
 
   const logOut = () => {
@@ -15,7 +14,7 @@ const NavBar = ({ }) => {
       <div className="nav-left">
         <h1 className="nav-logo">Skydot</h1>
 
-        <Link style={{ textDecoration: "none" }} to="/dashboard">
+        <Link style={{ textDecoration: "none" }} to="/analytics">
         <i className="fa-solid fa-chart-simple" style={{fontSize:'23px',cursor:'pointer'}}></i>
         </Link>
         <Link style={{ textDecoration: "none" }} to="/notification">

@@ -161,6 +161,7 @@ def createMessage(request):
     else:
         return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
  
+
 @api_view(['PUT'])
 def updateMessage(request, pk):
     if request.method == 'PUT':

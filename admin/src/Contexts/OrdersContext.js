@@ -7,12 +7,16 @@ export const OrdersProvider = ({ children }) => {
   const [ordersArray, setOrdersArray] = useState([]);
   const [message, setMessage] = useState(null);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      fetchOrders(storedToken);
-    }
-  }, []);
+  const storedToken = localStorage.getItem('token')
+
+  useEffect(()=>{
+  if (storedToken) {
+    fetchOrders(storedToken)
+  }
+  },[storedToken])
+
+
+
 
   const fetchOrders = async (token) => {
     setMessage(null);
@@ -37,6 +41,8 @@ export const OrdersProvider = ({ children }) => {
     }
     return { success: false, errorMessage: message };
   };
+
+
 
   const updateOrder = async (order) => {
     setMessage(null);

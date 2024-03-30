@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save, post_delete, pre_save
-from django.db.models import Sum, F
+from django.db.models import Sum, F,Avg, Count
 from django.db import transaction, IntegrityError
 
 from django.dispatch import receiver
@@ -109,7 +109,7 @@ def notifyLowReview(sender, instance, created, **kwargs):
             review_body = instance.body
             
             message_body = f"{product.name} received 1 star.({product.vote}% positive votes.) "
-            message_body += f"Because {review_body}" if review_body else ""
+            message_body += f"Because {review_body}." if review_body else ""
             message_body += f" You can contact {customer.name} at {customer.phone_number}."
             
             message_data = {
@@ -145,22 +145,26 @@ def createWelcomeMessage(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Review)
 def update_vote(sender, instance, **kwargs):
     if sender == Review:
-        rating = instance.rating
-        product_id = instance.product.id
         try:
-            if rating and product_id:
-                product = Product.objects.get(id=product_id)
-                total_reviews = int(product.reviews.count() * 5)
-                total_rating = int(product.reviews.aggregate(Sum('rating'))['rating__sum'])              
-                average_rating = total_rating / total_reviews
-                product.vote = int(average_rating * 100)
+            product_id = instance.orderProduct.product.id
+            product = Product.objects.get(id=product_id)
+            
+            # Calculate average rating
+            product_reviews = Review.objects.filter(orderProduct__product=product)
+            total_reviews = product_reviews.aggregate(total_reviews=Count('id'))['total_reviews'] * 5
+            average_rating = product_reviews.aggregate(average_rating=Avg('rating'))['average_rating']
+            
+            if total_reviews is not None and average_rating is not None:
+                product.vote = int((average_rating or 0) * 20)  # Scale 0-100 to 0-20
                 product.save()
+        
         except Product.DoesNotExist:
             print("Product does not exist.")
         except ZeroDivisionError:
             print("Cannot calculate average rating with zero reviews.")
-        except IntegrityError as e:
-            print(f"IntegrityError: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+   
  
 
 

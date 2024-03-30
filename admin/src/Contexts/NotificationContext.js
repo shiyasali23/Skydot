@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect, Children } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import axios from "axios";
 
 export const notificationContext = createContext();
@@ -6,20 +6,21 @@ export const notificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
   const [notificationsArray, setNotificationsArray] = useState([]);
   const [message, setMessage] = useState(null);
+  const storedToken = localStorage.getItem('token')
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      fetchNotifications(storedToken);
-    }
-  }, []);
+useEffect(()=>{
+if (storedToken) {
+  fetchNotifications(storedToken)
+}
+},[storedToken])
 
-  const fetchNotifications = async (storedToken) => {
+
+  const fetchNotifications = async (token) => {
     setMessage(null);
     try {
       const response = await axios.get("/api/adminpanel/messages", {
         headers: {
-          Authorization: `Bearer ${storedToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const notifications = response.data;
@@ -74,7 +75,7 @@ export const NotificationProvider = ({ children }) => {
 
   return (
     <notificationContext.Provider
-      value={{ notificationsArray, message, setMessage, updateNotification, }}
+      value={{ notificationsArray, message, setMessage, updateNotification,fetchNotifications }}
     >
       {children}
     </notificationContext.Provider>

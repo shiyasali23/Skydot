@@ -5,6 +5,7 @@
 @import './Pages/Assets/ManageProduct.css';
 @import './Pages/Assets/TableList.css';
 @import './Pages/Assets/Notification.css';
+@import './Pages/Assets/Analytics.css';
 
 *,input,label,div,h1,h2,h3,h4,h5,img,p,td,tr,table,label,textarea,select {
   margin: 0;

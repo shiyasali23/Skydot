@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import NavBar from "../Components/NavBar";
 import { Link, useNavigate } from "react-router-dom";
 import { ordersContext } from "../Contexts/OrdersContext";
-import Message from "../Components/Message";
 
 const OrdersPage = () => {
   const { ordersArray, message } = useContext(ordersContext);
@@ -15,9 +14,7 @@ const OrdersPage = () => {
     if (!storedToken) {
       navigate("/");
     }
-    
-   
-  });
+  },[]);
 
   return (
     <div className="orders-page">

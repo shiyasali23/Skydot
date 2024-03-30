@@ -42,3 +42,8 @@
     cursor: pointer;
 
 }
+
+.disabled-seen-button{
+    width: 8%;
+    height: 35%;
+}

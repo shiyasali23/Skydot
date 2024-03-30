@@ -7,13 +7,13 @@ export const ProductsProvider = ({ children }) => {
   const [productsArray, setProductsArray] = useState([]);
   const [message, setMessage] = useState("");
 
+  const storedToken = localStorage.getItem('token')
 
   useEffect(()=>{
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      fetchProducts(storedToken)
-    }
-  },[])
+  if (storedToken) {
+    fetchProducts(storedToken)
+  }
+  },[storedToken])
 
 
   const fetchProducts = async (token) => {
@@ -79,6 +79,7 @@ export const ProductsProvider = ({ children }) => {
     } catch (error) {
       if (error.response.status === 401) {
         setMessage("Authentication error: Please login again.");
+        localStorage.removeItem("token");
       } else if (error.response.status === 500) {
         setMessage("Internal server error");
       } else {

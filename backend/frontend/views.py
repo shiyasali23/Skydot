@@ -104,7 +104,6 @@ def getOrder(request, pk):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getOrders(request):
     try:
         orders = Order.objects.all()
