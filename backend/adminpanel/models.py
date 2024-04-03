@@ -14,12 +14,6 @@ class Product(models.Model):
         ('pants', 'Pants'),
     ]
 
-    GENDER_CHOICES = [
-        ('men', 'Men'),
-        ('women', 'Women'),
-        ('unisex', 'Unisex'),
-    ]
-
     TAG_CHOICES = [
         ('featured', 'Featured'),
         ('new-arrival', 'New Arrival'),
@@ -30,7 +24,6 @@ class Product(models.Model):
     description = models.TextField(max_length=2000, null=False, blank=False)
     price = models.DecimalField(max_digits=10, decimal_places=1, null=False, blank=False)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, null=False, blank=False)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=False, blank=False)
     tag = models.CharField(max_length=11, choices=TAG_CHOICES, null=True, blank=False)
     vote = models.IntegerField(default=0, null=True, blank=True)
     total_sold = models.IntegerField(default=0, null=True, blank=True)

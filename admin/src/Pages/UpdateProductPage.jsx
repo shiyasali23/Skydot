@@ -4,15 +4,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import { productsContext } from "../Contexts/ProductsContext";
 import Message from "../Components/Message";
 
-const EditProductPage = () => {
+const UpdateProductPage = () => {
   const { id } = useParams();
-  const { productsArray, message, registerProduct, updateProduct, setMessage } =
-    useContext(productsContext);
+  const {
+    productsArray,
+    message,
+    registerProduct,
+    updateProduct,
+    deleteProduct,
+    setMessage,
+  } = useContext(productsContext);
 
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/");
+    }
     if (id) {
       const foundProduct = productsArray.find((product) => product.id === id);
       if (foundProduct) {
@@ -21,15 +31,10 @@ const EditProductPage = () => {
         setProduct(null);
       }
     }
-
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      navigate("/");
-    }
   }, [productsArray, id, navigate]);
 
   const handleImageChange = (e, imageKey) => {
-    if (product) {
+    if (id) {
       setProduct((prevProduct) => ({
         ...prevProduct,
         images: {
@@ -55,117 +60,140 @@ const EditProductPage = () => {
     }
   };
 
-  console.log(productsArray);
+  const handleDelete = async (id) => {
+    const { deleteStatus } = await deleteProduct(id);
+    if (deleteStatus) {
+      setProduct("")
+      navigate("/products");
+    }
+  };
+console.log(product);
   return (
     <div className="product-page">
       <NavBar />
       {message && <Message message={message} setMessage={setMessage} />}
       <form className="product-form" encType="multipart/form-data">
         <div className="product-input-left">
-
           <div className="product-input-left-top">
-        
+            <div className="product-input-container">
+              <label htmlFor="name">Name</label>
+              <input
+                className="product-input product-input-large"
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={product?.name ?? ""}
+                onChange={(e) =>
+                  setProduct((product) => ({
+                    ...product,
+                    name: e.target.value,
+                  }))
+                }
+              />
+            </div>
 
-          <div className="product-input-container">
-            <label htmlFor="name">Name</label>
-            <input
-              className="product-input product-input-large"
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={product?.name ?? ""}
-              onChange={(e) =>
-                setProduct((product) => ({
-                  ...product,
-                  name: e.target.value,
-                }))
-              }
-            />
+            <div className="product-input-container">
+              <label htmlFor="address">Description</label>
+              <textarea
+                style={{ height: "100px" }}
+                className="product-input product-input-large"
+                name="description"
+                placeholder="Description"
+                value={product?.description ?? ""}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    description: e.target.value,
+                  })
+                }
+              ></textarea>
+            </div>
           </div>
 
-          <div className="product-input-container">
-            <label htmlFor="address">Description</label>
-            <textarea
-              style={{ height: "100px" }}
-              className="product-input product-input-large"
-              name="description"
-              placeholder="Description"
-              value={product?.description ?? ""}
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  description: e.target.value,
-                })
-              }
-            ></textarea>
+          <div className="product-input-left-bottom">
+            <div className="product-input-image-container">
+              <label htmlFor="mainImage">Main Image</label>
+              <input
+                className="product-image-input"
+                type="file"
+                name="mainImage"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "main_image")}
+              />
+              <img
+                className="product-input-image"
+                src={product?.images?.main_image ?? null}
+                alt=""
+              />
+            </div>
+
+            <div className="product-input-image-container">
+              <label htmlFor="subImage1">Sub Image 1</label>
+              <input
+                className="product-image-input"
+                type="file"
+                id="sub_image_1"
+                name="sub_image_1"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "sub_image_1")}
+              />
+              <img
+                className="product-input-image"
+                src={product?.images?.sub_image_1 ?? null}
+                alt=""
+              />
+            </div>
+
+            <div className="product-input-image-container">
+              <label htmlFor="subImage1">Sub Image 2</label>
+              <input
+                className="product-image-input"
+                type="file"
+                id="sub_image_2"
+                name="sub_image_2"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "sub_image_2")}
+              />
+              <img
+                className="product-input-image"
+                src={product?.images?.sub_image_2 ?? null}
+                alt=""
+              />
+            </div>
+
+            <div className="product-input-image-container">
+              <label htmlFor="subImage1">Sub Image 3</label>
+              <input
+                className="product-image-input"
+                type="file"
+                id="sub_image_3"
+                name="sub_image_3"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e, "sub_image_3")}
+              />
+              <img
+                className="product-input-image"
+                src={product?.images?.sub_image_3 ?? null}
+                alt=""
+              />
+            </div>
           </div>
-          </div>
-
-       <div className="product-input-left-bottom">
-       <div className="product-input-image-container">
-            <label htmlFor="mainImage">Main Image</label>
-            <input
-              className="product-image-input"
-              type="file"
-              name="mainImage"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e, "main_image")}
-            />
-<img className="product-input-image" src={product?.images?.main_image ?? null} alt="" />
-          </div>
-
-          <div className="product-input-image-container">
-            <label htmlFor="subImage1">Sub Image 1</label>
-            <input
-              className="product-image-input"
-              type="file"
-              id="sub_image_1"
-              name="sub_image_1"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e, "sub_image_1")}
-            />
-            <img className="product-input-image" src={product?.images?.sub_image_1 ?? null} alt="" />
-
-          </div>
-
-          <div className="product-input-image-container">
-            <label htmlFor="subImage1">Sub Image 2</label>
-            <input
-              className="product-image-input"
-              type="file"
-              id="sub_image_2"
-              name="sub_image_2"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e, "sub_image_2")}
-            />
-            <img className="product-input-image" src={product?.images?.sub_image_2 ?? null} alt="" />
-
-          </div>
-
-          <div className="product-input-image-container">
-            <label htmlFor="subImage1">Sub Image 3</label>
-            <input
-              className="product-image-input"
-              type="file"
-              id="sub_image_3"
-              name="sub_image_3"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e, "sub_image_3")}
-            />
-            <img className="product-input-image" src={product?.images?.sub_image_3 ?? null} alt="" />
-
-          </div>
-
-       </div>
-
-         
-          
         </div>
 
         <div className="product-right">
-
-        <div className="product-input-container">
-            {product && <h5>Positive Rating {product.vote ?? ""}%</h5>}
+          <div className="product-input-container">
+            {id && <h5>Positive Rating {product?.vote ?? ""}%</h5>}
+            {id && (
+              <i
+                className="fa-solid fa-trash"
+                style={{
+                  fontSize: "20px",
+                  cursor: "pointer",
+                  color: "red",
+                }}
+                onClick={() => handleDelete(product?.id)}
+              ></i>
+            )}
           </div>
 
           <div className="product-input-container">
@@ -269,7 +297,7 @@ const EditProductPage = () => {
           </div>
 
           <div className="product-input-container">
-            <label htmlFor="price">Price</label>
+            <label htmlFor="price">Price &#8377;</label>
             <input
               className="product-input"
               type="number"
@@ -315,23 +343,6 @@ const EditProductPage = () => {
             </select>
           </div>
 
-          <div className="product-input-container">
-            <label htmlFor="gender">Gender</label>
-            <select
-              className="product-select"
-              id="gender"
-              name="gender"
-              value={product?.gender ?? ""}
-              onChange={(e) =>
-                setProduct({ ...product, gender: e.target.value })
-              }
-            >
-              <option value={product?.gender}>{product?.gender}</option>
-              <option value="men">Men</option>
-              <option value="women">Women</option>
-              <option value="unisex">Unisex</option>
-            </select>
-          </div>
           <button
             className="save-product-button"
             type="submit"
@@ -345,4 +356,4 @@ const EditProductPage = () => {
   );
 };
 
-export default EditProductPage;
+export default UpdateProductPage;

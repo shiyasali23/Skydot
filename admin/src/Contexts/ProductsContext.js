@@ -8,7 +8,6 @@ export const ProductsProvider = ({ children }) => {
   const [message, setMessage] = useState("");
 
   const storedToken = localStorage.getItem('token')
-
   useEffect(()=>{
   if (storedToken) {
     fetchProducts(storedToken)
@@ -37,17 +36,57 @@ export const ProductsProvider = ({ children }) => {
     }
   };
 
+
+  const registerProduct = async (product) => {
+    console.log(product);
+    // setMessage(null);
+    // try {
+    //   const storedToken = localStorage.getItem("token");
+    //   const response = await axios.post(
+    //     "/api/adminpanel/product/create",
+    //     product,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${storedToken}`,
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     }
+    //   );
+    //   const products = response.data;
+    //   setProductsArray(products);
+    //   setMessage("Product registration successful");
+    // } catch (error) {
+    //   if (error.response.status === 401) {
+    //     setMessage("Authentication error: Please login again.");
+    //     localStorage.removeItem("token");
+    //   } else if (error.response.status === 500) {
+    //     setMessage("Internal server error");
+    //   } else {
+    //     setMessage("An unknown error occurred");
+    //   }
+    // }
+  };
+
+
   const updateProduct = async (product) => {
     setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
-      const response = await axios.post("/api/adminpanel/products", product, {
+      const response = await axios.put(`/api/adminpanel/product/update/${product.id}/`, product, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
       });
-      const products = response.data;
-      setProductsArray(products);
+      const updatedProduct = response.data;
+      setProductsArray((prevArray) => {
+        return prevArray.map((product) => {
+          if (product.id === updatedProduct.id) {
+            return updatedProduct;
+          } else {
+            return product;
+          }
+        });
+      });
     } catch (error) {
       if (error.response.status === 401) {
         setMessage("Authentication error: Please login again.");
@@ -58,35 +97,39 @@ export const ProductsProvider = ({ children }) => {
       }
     }
   };
-
-  const registerProduct = async (product) => {
+  
+  const deleteProduct = async (id) => {
     setMessage(null);
     try {
-      const storedToken = localStorage.getItem("token");
-      const response = await axios.post(
-        "/api/adminpanel/product/create",
-        product,
-        {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-            "Content-Type": "multipart/form-data",
-          },
+        const storedToken = localStorage.getItem("token");
+        const response = await axios.delete(
+            `/api/adminpanel/product/delete/${id}/`, {
+                headers: {
+                    Authorization: `Bearer ${storedToken}`,
+                },
+            }
+        );
+        if (response.status === 204) {
+            const dummyProductsArray = productsArray.filter(product => product.id !== id);
+            setProductsArray(dummyProductsArray)
+            return { deleteStatus: true };
         }
-      );
-      const products = response.data;
-      setProductsArray(products);
-      setMessage("Product registration successful");
     } catch (error) {
-      if (error.response.status === 401) {
-        setMessage("Authentication error: Please login again.");
-        localStorage.removeItem("token");
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+        console.log("Error object:", error);
+        if (error.response && error.response.status === 401) {
+            setMessage("Authentication error: Please login again.");
+            localStorage.removeItem("token");
+        } else if (error.response && error.response.status === 500) {
+            setMessage("Internal server error");
+        } else if (error.response && error.response.status === 404) {
+            setMessage("Product not found. Something went wrong");
+        } else {
+            setMessage("An unknown error occurred");
+        }
+        return { deleteStatus: false };
     }
-  };
+};
+
 
   return (
     <productsContext.Provider
@@ -98,6 +141,7 @@ export const ProductsProvider = ({ children }) => {
         updateProduct,
         fetchProducts,
         registerProduct,
+        deleteProduct,
       }}
     >
       {children}

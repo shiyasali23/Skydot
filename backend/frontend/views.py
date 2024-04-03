@@ -108,7 +108,7 @@ def getOrders(request):
     try:
         orders = Order.objects.all()
         serialized_orders = OrderSerializer(orders, many=True)
-        return Response(serialized_orders.data)
+        return Response(serialized_orders.data, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         data = {

@@ -43,17 +43,17 @@ const AnalyticsPage = () => {
       <div className="analytics-wrapper">
         <div className="analytics-wrapper-section">
           <div className="analytics-container">
-            {productsSales && (
-              <BarGraph
-                data={productsSales}
-                heading={"Total sold"}
-                canvasID={1}
-                backgroundColor={'rgba(75, 192, 192, 0.2)'}
-                borderColor = {'rgba(75, 192, 192, 1)'}
-                indexAxis={'x'}
-                
+
+          {monthlySales && (
+              <LineGraph
+                data={monthlySales}
+                heading={"Monthly Sales"}
+                canvasId={2}
+                borderColor={'rgba(192, 75, 192, 1)'}
               />
             )}
+
+           
           </div>
           <div className="analytics-container">
             {productsRatings && (
@@ -80,12 +80,15 @@ const AnalyticsPage = () => {
             )}
           </div>
           <div className="analytics-container">
-            {monthlySales && (
-              <LineGraph
-                data={monthlySales}
-                heading={"Monthly Sales"}
-                canvasId={2}
-                borderColor={'rgba(192, 75, 192, 1)'}
+          {productsSales && (
+              <BarGraph
+                data={productsSales}
+                heading={"Total sold"}
+                canvasID={1}
+                backgroundColor={'rgba(75, 192, 192, 0.2)'}
+                borderColor = {'rgba(75, 192, 192, 1)'}
+                indexAxis={'x'}
+                
               />
             )}
           </div>

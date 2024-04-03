@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ordersContext } from "../Contexts/OrdersContext";
 import Message from "../Components/Message";
 
-const ManageOrders = () => {
+const UpdateOrderPage = () => {
   const { id } = useParams();
   const { ordersArray, updateOrder } = useContext(ordersContext);
   const [message, setMessage] = useState(null)
@@ -179,4 +179,4 @@ const ManageOrders = () => {
   );
 };
 
-export default ManageOrders;
+export default UpdateOrderPage;

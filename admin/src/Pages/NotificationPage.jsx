@@ -11,7 +11,9 @@ const NotificationPage = () => {
     message,
     setMessage,
   } = useContext(notificationContext);
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+
+
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");

@@ -54,28 +54,9 @@ def updateProduct(request, pk):
     if request.method == 'PUT':
         try:
             product = Product.objects.get(id=pk)
-            serializer = ProductSerializer(product, data=request.data, partial=True)  
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-            if 'stock' in request.data:
-                stock_instance = Stock.objects.get(product=product)
-                stock_serializer = StockSerializer(stock_instance, data=request.data['stock'], partial=True)
-                if stock_serializer.is_valid():
-                    stock_serializer.save()
-                else:
-                    return Response(stock_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            if 'images' in request.data:
-                product_image_instance = ProductImage.objects.get(product=product)
-                product_image_serializer = ProductImageSerializer(product_image_instance, data=request.data['images'], partial=True)
-                if product_image_serializer.is_valid():
-                    product_image_serializer.save()
-                else:
-                    return Response(product_image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            serializer = ProductSerializer(product, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()           
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Product.DoesNotExist as e:
             print(e)

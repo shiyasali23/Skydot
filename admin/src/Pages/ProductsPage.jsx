@@ -17,6 +17,8 @@ function ProductsPage() {
   },[]);
 
 
+
+
   return (
     <div>
       <NavBar />
@@ -24,7 +26,6 @@ function ProductsPage() {
         <h2 className="error-message">{message}</h2>
       ) : (
         <table className="table">
-          <>
             <thead className="table-thead">
               <tr>
                 <th className="table-header">Index</th>
@@ -44,7 +45,7 @@ function ProductsPage() {
                       padding:'0',
                       margin:'0'
                     }}
-                    to="/add-product"
+                    to="/create-product"
                   >
                     <h5 className="table-add-bttn">
                       ADD<i className="fa-solid fa-plus"></i>
@@ -81,7 +82,7 @@ function ProductsPage() {
                   </td>
                   <td className="table-value">
                     <Link
-                      to={`/edit-product/${product.id}`}
+                      to={`/update-product/${product.id}`}
                       style={{
                         textDecoration: "none",
                       }}
@@ -89,10 +90,10 @@ function ProductsPage() {
                       <i className="fa-solid fa-pen-to-square"></i>
                     </Link>
                   </td>
+                  
                 </tr>
               ))}
             </tbody>
-          </>
         </table>
       )}
     </div>

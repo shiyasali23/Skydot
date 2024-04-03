@@ -3,9 +3,10 @@ import "./bootstrap.min.css";
 
 import LoginPage from "./Pages/LoginPage";
 import OrdersPage from "./Pages/OrdersPage";
-import ManageOrders from "./Pages/ManageOrdersPage.jsx";
+import UpdateOrderPage from "./Pages/UpdateOrderPage.jsx";
 import AnalyticsPage from "./Pages/AnalyticsPage";
-import ManageProductPage from "./Pages/ManageProductPage";
+import UpdateProductPage from "./Pages/UpdateProductPage";
+import CreateProductPage from "./Pages/CreateProductPage.jsx";
 import ProductsPage from "./Pages/ProductsPage.jsx";
 import NotificationPage from "./Pages/NotificationPage.jsx";
 
@@ -21,25 +22,28 @@ function App() {
         <OrdersProvider>
           <NotificationProvider>
             <AnalyticsProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/edit-orders/:id" element={<ManageOrders />} />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route
+                    path="/update-orders/:id"
+                    element={<UpdateOrderPage />}
+                  />
 
-                <Route path="/products" element={<ProductsPage />} />
-                <Route
-                  path="/edit-product/:id"
-                  element={<ManageProductPage />}
-                />
-                <Route path="/add-product" element={<ManageProductPage />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route
+                    path="/update-product/:id"
+                    element={<UpdateProductPage />}
+                  />
+                  <Route path="/create-product" element={<CreateProductPage />} />
 
-                <Route path="/analytics" element={<AnalyticsPage />} />
-                <Route path="/notification" element={<NotificationPage />} />
-              </Routes>
-            </BrowserRouter>
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/notification" element={<NotificationPage />} />
+                </Routes>
+              </BrowserRouter>
             </AnalyticsProvider>
-            </NotificationProvider>
+          </NotificationProvider>
         </OrdersProvider>
       </ProductsProvider>
     </div>

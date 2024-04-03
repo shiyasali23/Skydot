@@ -149,13 +149,12 @@ def update_vote(sender, instance, **kwargs):
             product_id = instance.orderProduct.product.id
             product = Product.objects.get(id=product_id)
             
-            # Calculate average rating
             product_reviews = Review.objects.filter(orderProduct__product=product)
             total_reviews = product_reviews.aggregate(total_reviews=Count('id'))['total_reviews'] * 5
             average_rating = product_reviews.aggregate(average_rating=Avg('rating'))['average_rating']
             
             if total_reviews is not None and average_rating is not None:
-                product.vote = int((average_rating or 0) * 20)  # Scale 0-100 to 0-20
+                product.vote = int((average_rating or 0) * 20)  
                 product.save()
         
         except Product.DoesNotExist:

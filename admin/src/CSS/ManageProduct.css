@@ -5,9 +5,9 @@
 }
 
 .product-form {
-  height: 78vh;
-  width: 90%;
-  margin: 5vh auto;
+  height: 83vh;
+  width: 95%;
+  margin:  auto;
   /* border: 1px solid black; */
   display: flex;
   align-items: center;
@@ -77,6 +77,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
+  padding: 20px 0px;
   /* border: 1px solid black; */
 }
 

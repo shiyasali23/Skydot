@@ -8,21 +8,24 @@ const OrdersPage = () => {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem("token");
 
-  const unMovedOrders = ordersArray.filter(order => order.status === 'processing').length;
-  
+  const unMovedOrders = ordersArray.filter(
+    (order) => order.status === "processing"
+  ).length;
+
   useEffect(() => {
     if (!storedToken) {
       navigate("/");
     }
-  },[]);
+  }, []);
+ 
   return (
     <div className="orders-page">
       <NavBar />
-      {message ? ( 
+      {message ? (
         <h2 className="error-message">{message}</h2>
       ) : (
         <table className="table">
-                    <thead className="table-thead">
+          <thead className="table-thead">
             <tr className="table-tr">
               <th className="table-header">Date</th>
               <th className="table-header">Tracking ID</th>
@@ -32,7 +35,19 @@ const OrdersPage = () => {
               <th className="table-header">Delivered</th>
               <th className="table-header">Status</th>
               <th className="table-header">
-                <p style={{ fontSize: '15px', color: 'red', margin: "0", padding: '0', width: '40%', height: '100%', textAlign: 'center' }}>{unMovedOrders > 0 ? unMovedOrders : ''}</p>
+                <p
+                  style={{
+                    fontSize: "15px",
+                    color: "red",
+                    margin: "0",
+                    padding: "0",
+                    width: "40%",
+                    height: "100%",
+                    textAlign: "center",
+                  }}
+                >
+                  {unMovedOrders > 0 ? unMovedOrders : ""}
+                </p>
                 <i className="fa-solid fa-truck-fast"> </i>
               </th>
             </tr>
@@ -69,7 +84,7 @@ const OrdersPage = () => {
                 <td className="table-value">{order.status}</td>
                 <td className="table-value">
                   <Link
-                    to={`/edit-orders/${order.id}`}
+                    to={`/update-orders/${order.id}`}
                     style={{
                       textDecoration: "none",
                     }}
@@ -84,8 +99,6 @@ const OrdersPage = () => {
       )}
     </div>
   );
-  
-  
 };
 
 export default OrdersPage;

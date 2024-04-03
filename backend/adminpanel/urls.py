@@ -5,10 +5,10 @@ from . import views
 
 urlpatterns = [
     path('product/create', views.createProduct, name="create-product"),
-    path('products/', views.getProducts, name="all-products"),
-    path('product/<str:pk>/', views.getProduct, name="product"),
     path('product/update/<str:pk>/', views.updateProduct, name="update-product"),
     path('product/delete/<str:pk>/', views.deleteProduct, name="delete-product"),
+    path('products/', views.getProducts, name="all-products"),
+    path('product/<str:pk>/', views.getProduct, name="product"),
 
     path('message/create/', views.createMessage, name="create-message"),
     path('message/update/<str:pk>/', views.updateMessage, name="update-message"),
