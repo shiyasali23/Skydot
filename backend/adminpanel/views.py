@@ -42,11 +42,36 @@ def createProduct(request):
         try:
             serializer = ProductSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            product = serializer.save()
+            return Response(product.id, status=status.HTTP_201_CREATED)
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def uploadProductImages(request, pk):
+    if request.method == 'POST':
+        try:
+            product = Product.objects.get(id=pk)
+            image_data = {
+                'main_image': request.FILES.get("main_image"),
+                'sub_image_1': request.FILES.get("sub_image_1"),
+                'sub_image_2': request.FILES.get("sub_image_2"),
+                'sub_image_3': request.FILES.get("sub_image_3")
+            }
+            product_image = ProductImage.objects.create(product=product, **image_data)
+            updated_product = Product.objects.get(id=pk)
+            serialized_product = ProductSerializer(updated_product)
+            return Response(serialized_product.data, status=status.HTTP_201_CREATED)
+        except Product.DoesNotExist as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(f"failed: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
 
 @api_view(['PUT'])
@@ -64,25 +89,6 @@ def updateProduct(request, pk):
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(['POST'])
-def uploadImage(request):
-    try:
-        data = request.data
-    
-        product_id = data['product_id']
-        product = Product.objects.get(_id=product_id)
-        
-        product.image = request.FILES.get('images')
-        product.save()
-        return Responce("image uploaded sucesfully")
-    except Exception as e:
-        print(e)
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        
-        
 
 
 @api_view(['DELETE'])
@@ -185,3 +191,22 @@ def getMessage(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# {
+#     name:'name',
+#     description:'description',
+#     price:'price',
+#     tag:'tag',
+#     category:'category',
+#     stock:{
+#       stock_S:'stock_S',
+#       stock_M:'stock_M',
+#       stock_L:'stock_L',
+#       stock_XL:'stock_XL'
+#     },
+#     images:{
+#       main_image:'main_image',
+#       sub_image_1:'sub_image_1',
+#       sub_image_2:'sub_image_2',
+#       sub_image_3:'sub_image_3'
+#     }
+#   }

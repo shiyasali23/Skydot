@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.5",
     "chart.js": "^4.4.2",
+    "formik": "^2.4.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
     "react-chartjs-2": "^5.2.0",
@@ -18,7 +19,8 @@
     "react-router-dom": "^6.21.2",
     "react-scripts": "^5.0.1",
     "victory": "^37.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

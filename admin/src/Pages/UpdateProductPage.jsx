@@ -196,25 +196,7 @@ console.log(product);
             )}
           </div>
 
-          <div className="product-input-container">
-            <label htmlFor="stockXS">Stock XS</label>
-            <input
-              className="product-input"
-              type="number"
-              placeholder="Stock XS"
-              name="stock_XS"
-              value={product?.stock?.stock_XS ?? ""}
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  stock: {
-                    ...(product?.stock || {}),
-                    stock_XS: e.target.value,
-                  },
-                })
-              }
-            />
-          </div>
+   
 
           <div className="product-input-container">
             <label htmlFor="stockS">Stock S</label>

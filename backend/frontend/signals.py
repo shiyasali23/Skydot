@@ -18,7 +18,6 @@ def updateStock(sender, instance, created, **kwargs):
         size = instance.size
         quantity = instance.quantity
         stock_data = Stock.objects.select_for_update().get(product=product)
-        stock_data.stock_XS = F('stock_XS') - quantity if size == 'XS' else F('stock_XS')
         stock_data.stock_S = F('stock_S') - quantity if size == 'S' else F('stock_S')
         stock_data.stock_M = F('stock_M') - quantity if size == 'M' else F('stock_M')
         stock_data.stock_L = F('stock_L') - quantity if size == 'L' else F('stock_L')
@@ -30,7 +29,6 @@ def updateStock(sender, instance, created, **kwargs):
         stock_data = Stock.objects.select_for_update().get(product=product)
         product_data = Product.objects.select_for_update().get(id=product.id)           
         if all([
-            stock_data.stock_XS == 0,
             stock_data.stock_S == 0,
             stock_data.stock_M == 0,
             stock_data.stock_L == 0,

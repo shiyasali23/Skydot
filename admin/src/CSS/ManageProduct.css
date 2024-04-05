@@ -21,7 +21,7 @@
 }
 
 
-.product-input-left {
+.product-form-left {
   height: 100%;
   width: 60%;
   display: flex;
@@ -31,7 +31,7 @@
   justify-content: space-between;
 }
 
-.product-input-left-top{
+.product-form-left-top{
   width: 100%;
   height: 35%;
   display: flex;
@@ -41,7 +41,7 @@
   /* border: 1px solid black; */
 }
 
-.product-input-left-bottom{
+.product-form-left-bottom{
   width: 100%;
   height: 65%;
   display: flex;
@@ -70,7 +70,7 @@
 
 }
 
-.product-right {
+.product-form-right {
   height: 100%;
   width: 40%;
   display: flex;

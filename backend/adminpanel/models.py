@@ -9,14 +9,15 @@ from django.core.exceptions import ValidationError
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
-        ('shirt', 'Shirt'),
-        ('t-shirt', 'T-shirt'),
-        ('pants', 'Pants'),
+        ("Shirt", "Shirt"),
+        ("T-Shirt", "T-Shirt"),
+        ("Pants", "Pants")
     ]
 
     TAG_CHOICES = [
-        ('featured', 'Featured'),
-        ('new-arrival', 'New Arrival'),
+        ("None", "None"),  
+        ("Featured", "Featured"),
+        ("New Arrival", "New Arrival")
     ]
 
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
@@ -31,16 +32,26 @@ class Product(models.Model):
     out_of_stock = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.id
     
     class Meta:
         ordering = ['-total_sold']
+    
+class ProductImage(models.Model):
+    id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='images')
+    main_image = models.ImageField(null=False, blank=False)
+    sub_image_1 = models.ImageField(null=False, blank=False)
+    sub_image_2 = models.ImageField(null=False, blank=False)
+    sub_image_3 = models.ImageField(null=False, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.product.name
     
 class Stock(models.Model):
     id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
     product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='stock')
-    stock_XS = models.IntegerField(default=0, null=False, blank=False)
     stock_S = models.IntegerField(default=0, null=False, blank=False)
     stock_M = models.IntegerField(default=0, null=False, blank=False)
     stock_L = models.IntegerField(default=0, null=False, blank=False)
@@ -53,7 +64,6 @@ class Stock(models.Model):
     def save(self, *args, **kwargs):
         try:
             if all([
-                self.stock_XS == 0,
                 self.stock_S == 0,
                 self.stock_M == 0,
                 self.stock_L == 0,
@@ -70,17 +80,7 @@ class Stock(models.Model):
 
     
     
-class ProductImage(models.Model):
-    id = models.CharField(max_length=22, default=shortuuid.uuid, unique=True, primary_key=True, editable=False)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE,related_name='images')
-    main_image = models.ImageField(null=False, blank=False)
-    sub_image_1 = models.ImageField(null=False, blank=False)
-    sub_image_2 = models.ImageField(null=False, blank=False)
-    sub_image_3 = models.ImageField(null=False, blank=False)
-    created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.product.name
 
 
 class Message(models.Model):

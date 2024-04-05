@@ -8,14 +8,13 @@ function ProductsPage() {
   const storedToken = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  const outOfStock = productsArray.filter(product => product.out_of_stock).length;
+  const outOfStock = Array.isArray(productsArray) ? productsArray.filter(product => product.out_of_stock).length : 0;
 
   useEffect(() => {    
     if (!storedToken) {
       navigate("/");
     }
   },[]);
-
 
 
 

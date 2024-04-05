@@ -23,7 +23,7 @@ def notifyOutOfStock(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Product)
 def sendProductNotification(sender, instance, created, **kwargs):
-    if created and instance.tag in ['featured', 'new-arrival']:
+    if created and instance.tag in ['Featured', 'New Arrival']:
         try:
             message_body = f"Check out our {instance.tag} {instance.name} at the price of {instance.price}."
             Message.objects.get_or_create(body=message_body, to='all')

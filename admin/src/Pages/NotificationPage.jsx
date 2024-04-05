@@ -22,12 +22,10 @@ const NotificationPage = () => {
     }
   }, []);
 
-  const handleSeen = async (id) => {
-    const { load } = await updateNotification(id);
-    if (load) {
-      setMessage(load);
-    }
+  const handleSeen = (id) => {
+    updateNotification(id);
   };
+  
   return (
     <div className="notification-page">
       <NavBar />

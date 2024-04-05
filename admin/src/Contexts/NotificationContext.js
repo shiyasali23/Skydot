@@ -26,14 +26,7 @@ if (storedToken) {
       const notifications = response.data;
       setNotificationsArray(notifications);
     } catch (error) {
-      if (error.response.status === 401) {
-        setMessage("Authentication error Please login again.");
-        localStorage.removeItem("token");
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+      handleErrors(error)
     }
   };
 
@@ -63,13 +56,27 @@ if (storedToken) {
 
       return { notificationsArray };
     } catch (error) {
-      if (error.response && error.response.status === 500) {
-        return { success: false, load: "Server Error. Try Again" };
-      } else if (error.response && error.response.status === 401) {
-        return { success: false, load: "Unauthorized, Login Again" };
-      } else {
-        return { success: false, load: "An Unknown Error Occurred" };
-      }
+      handleErrors(error)
+      return { success: false };
+    }
+  };
+
+  const handleErrors = (error) => {
+    if (error.response && error.response.status === 401) {
+      setMessage("Authentication error: Please login again.");
+      localStorage.removeItem("token");
+    } else if (error.response && error.response.status === 500) {
+      setMessage("Internal server error");
+    } else if (error.response && error.response.status === 404) {
+      setMessage("Product not found. Something went wrong");
+    } else if (error.response && error.response.status === 400) {
+      setMessage("Bad request. Please check your input data.");
+    } else if (error.response && error.response.status === 403) {
+      setMessage("Forbidden. You don't have permission to access this resource.");
+    } else if (error.response && error.response.status === 409) {
+      setMessage("Conflict. This action conflicts with the current state of the server.");
+    } else {
+      setMessage("An unknown error occurred");
     }
   };
 

@@ -36,7 +36,6 @@ const AnalyticsPage = () => {
       setMonthlyBilling({ labels, values: total_billing });
     }
   }, [getProductsData, getMonthlyData]);
-  console.log(productsRatings, productsSales);
   return (
     <div className="analytics-page">
       <NavBar />

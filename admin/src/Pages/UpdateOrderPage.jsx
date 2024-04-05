@@ -24,8 +24,7 @@ const UpdateOrderPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { success, load } = await updateOrder(order);
-    setMessage(load)
+    const { success } = await updateOrder(order);
     
     if (success) {
       navigate('/orders');
