@@ -7,6 +7,7 @@ export const ProductsProvider = ({ children }) => {
   const [productsArray, setProductsArray] = useState([]);
   const [message, setMessage] = useState("");
   const [serverSatus, setserverSatus] = useState(null)
+  const [loading, setLoading] = useState(null)
 
   const storedToken = localStorage.getItem("token");
   useEffect(() => {
@@ -32,6 +33,7 @@ export const ProductsProvider = ({ children }) => {
 
   const registerProduct = async (productData) => {
     setMessage(null);
+    setLoading(true)
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.post(
@@ -51,15 +53,18 @@ export const ProductsProvider = ({ children }) => {
     } catch (error) {
       handleErrors(error);
       return { success: false };
+    }finally{
+      setLoading(null)
     }
   };
 
   const updateProduct = async (productData) => {
+    setLoading(true)
     setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
-      const response = await axios.post(
-        "/api/adminpanel/product/create/",
+      const response = await axios.put(
+        `/api/adminpanel/product/update/${productData.id}/`,
         productData,
         {
           headers: {
@@ -83,11 +88,14 @@ export const ProductsProvider = ({ children }) => {
     } catch (error) {
       handleErrors(error);
       return { success: false };
+    }finally{
+      setLoading(null)
     }
   };
 
   const deleteProduct = async (id) => {
     setMessage(null);
+    setLoading(true)
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.delete(
@@ -108,6 +116,8 @@ export const ProductsProvider = ({ children }) => {
     } catch (error) {
       handleErrors(error);
       return { deleteStatus: false };
+    }finally{
+      setLoading(null)
     }
   };
 
@@ -139,6 +149,7 @@ export const ProductsProvider = ({ children }) => {
         productsArray,
         message,
         serverSatus,
+        loading,
 
         setMessage,
         updateProduct,

@@ -8,13 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
-# ---------------------Authentication---------------------
-
-
-
-
-
-
 # ------------------------Product---------------------------
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -22,7 +15,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        exclude = ['id','created']
 
 
    
@@ -31,7 +24,7 @@ class StockSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Stock
-        fields = '__all__'
+        exclude = ['id','created']
         
       
 
@@ -55,51 +48,36 @@ class ProductSerializer(serializers.ModelSerializer):
             return product
         else:
             raise serializers.ValidationError("Stock data and image data are required")
-            
-    # def update(self, instance, validated_data):
-    #     stock_data = validated_data.pop('stock', None)
-    #     image_data = validated_data.pop('images', None)
 
-    #     instance = super().update(instance, validated_data)
+    def update(self, instance, validated_data):
+        stock_data = validated_data.pop('stock', None)
+        image_data = validated_data.pop('images', None)
 
-    #     if stock_data is not None:
-    #         stock_instance = instance.stock
-    #         if stock_instance:
-    #             stock_serializer = StockSerializer(stock_instance, data=stock_data, partial=True)
-    #             if stock_serializer.is_valid():
-    #                 stock_serializer.save()
-    #             else:
-    #                 raise serializers.ValidationError(stock_serializer.errors)
+        instance = super().update(instance, validated_data)
 
-    #     if image_data is not None:
-    #         image_instance = instance.images
-    #         if image_instance:
-    #             image_serializer = ProductImageSerializer(image_instance, data=image_data, partial=True)
-    #             if image_serializer.is_valid():
-    #                 image_serializer.save()
-    #             else:
-    #                 raise serializers.ValidationError(image_serializer.errors)
+        if stock_data is not None:
+            stock_instance = instance.stock
+            if stock_instance:
+                stock_serializer = StockSerializer(stock_instance, data=stock_data, partial=True)
+                if stock_serializer.is_valid():
+                    stock_serializer.save()
+                else:
+                    raise serializers.ValidationError(stock_serializer.errors)
 
-    #     return instance
+        if image_data is not None:
+            image_instance = instance.images
+            if image_instance:
+                image_serializer = ProductImageSerializer(image_instance, data=image_data, partial=True)
+                if image_serializer.is_valid():
+                    image_serializer.save()
+                else:
+                    raise serializers.ValidationError(image_serializer.errors)
+
+        return instance
+
 
     
     
-
-
-
-    # def update(self, instance, validated_data):
-    #     stock_data = validated_data.pop('stock', None)
-
-    #     try:
-    #         instance = super().update(instance, validated_data)
-    #         if stock_data:
-    #             stock_instance = instance.stock
-    #             for key, value in stock_data.items():
-    #                 setattr(stock_instance, key, value)
-    #             stock_instance.save()
-    #         return instance
-    #     except Exception as e:
-    #         raise serializers.ValidationError(f"Failed to update product: {str(e)}")
    
 # -------------------Message---------------------------
 

@@ -3,38 +3,22 @@ import NavBar from "../Components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { productsContext } from "../Contexts/ProductsContext";
 import Message from "../Components/Message";
+import Loader from "../Components/Loader";
 
-const ManageProductPage = () => {
-  const { id } = useParams();
+const CreateProductPage = () => {
   const navigate = useNavigate();
 
-  const {
-    productsArray,
-    message,
-    deleteProduct,
-    registerProduct,
-    serverSatus,
-    setMessage,
-  } = useContext(productsContext);
+  const { message, registerProduct, serverSatus, setMessage, loading } =
+    useContext(productsContext);
 
-  const [product, setProduct] = useState(() =>
-    id
-      ? productsArray.find((product) => product.id === id)
-      : { category: "Shirt", tag: "None" }
-  );
+  const [product, setProduct] = useState({ category: "Shirt", tag: "None" });
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
       navigate("/");
     }
-
-    if (id && productsArray.length > 0) {
-      setProduct(productsArray.find((product) => product.id === id));
-    } else {
-      setProduct({ category: "Shirt", tag: "None" });
-    }
-  }, [id, productsArray, navigate]);
+  }, []);
 
   const handleImageChange = (e, imageKey) => {
     setProduct({
@@ -55,14 +39,6 @@ const ManageProductPage = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    const { deleteStatus } = await deleteProduct(id);
-    if (deleteStatus) {
-      setProduct("");
-      navigate("/products");
-    }
-  };
-
   return (
     <div className="product-page">
       <NavBar />
@@ -70,6 +46,8 @@ const ManageProductPage = () => {
 
       {serverSatus ? (
         <h2 className="error-message">{serverSatus}</h2>
+      ) : loading ? (
+        <Loader text={"Creating Product"} />
       ) : (
         <>
           <form className="product-form" onSubmit={handleSubmit}>
@@ -126,11 +104,7 @@ const ManageProductPage = () => {
                   {product?.images?.main_image && (
                     <img
                       className="product-input-image"
-                      src={
-                        id
-                          ? product.images.main_image
-                          : URL.createObjectURL(product.images.main_image)
-                      }
+                      src={URL.createObjectURL(product.images.main_image)}
                       alt=""
                     />
                   )}
@@ -150,11 +124,7 @@ const ManageProductPage = () => {
                   {product?.images?.sub_image_1 && (
                     <img
                       className="product-input-image"
-                      src={
-                        id
-                          ? product.images.sub_image_1
-                          : URL.createObjectURL(product.images.sub_image_1)
-                      }
+                      src={URL.createObjectURL(product?.images?.sub_image_1)}
                       alt=""
                     />
                   )}
@@ -174,11 +144,7 @@ const ManageProductPage = () => {
                   {product?.images?.sub_image_2 && (
                     <img
                       className="product-input-image"
-                      src={
-                        id
-                          ? product.images.sub_image_2
-                          : URL.createObjectURL(product.images.sub_image_2)
-                      }
+                      src={URL.createObjectURL(product?.images?.sub_image_2)}
                       alt=""
                     />
                   )}
@@ -198,11 +164,7 @@ const ManageProductPage = () => {
                   {product?.images?.sub_image_3 && (
                     <img
                       className="product-input-image"
-                      src={
-                        id
-                          ? product.images.sub_image_3
-                          : URL.createObjectURL(product.images.sub_image_3)
-                      }
+                      src={URL.createObjectURL(product?.images?.sub_image_3)}
                       alt=""
                     />
                   )}
@@ -211,24 +173,6 @@ const ManageProductPage = () => {
             </div>
 
             <div className="product-form-right">
-              {id && (
-                <div
-                  className="product-input-container"
-                  style={{ flexDirection: "row" }}
-                >
-                  <h5>Positive Rating- {product?.vote ?? ""} %</h5>
-                  <i
-                    className="fa-solid fa-trash"
-                    style={{
-                      fontSize: "20px",
-                      cursor: "pointer",
-                      color: "red",
-                    }}
-                    onClick={() => handleDelete(product?.id)}
-                  ></i>
-                </div>
-              )}
-
               <div className="product-input-container">
                 <label htmlFor="stockS">Stock S</label>
                 <input
@@ -365,7 +309,7 @@ const ManageProductPage = () => {
               </div>
 
               <button className="save-product-button" type="submit">
-                {id ? "Update" : "Create"}
+                Create
               </button>
             </div>
           </form>
@@ -375,4 +319,4 @@ const ManageProductPage = () => {
   );
 };
 
-export default ManageProductPage;
+export default CreateProductPage;

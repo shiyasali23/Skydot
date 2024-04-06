@@ -64,38 +64,38 @@ def createProduct(request):
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @api_view(['POST'])
-# def uploadProductImages(request, pk):
-#     if request.method == 'POST':
-#         try:
-#             product = Product.objects.get(id=pk)
-#             image_data = {
-#                 'main_image': request.FILES.get("main_image"),
-#                 'sub_image_1': request.FILES.get("sub_image_1"),
-#                 'sub_image_2': request.FILES.get("sub_image_2"),
-#                 'sub_image_3': request.FILES.get("sub_image_3")
-#             }
-#             product_image = ProductImage.objects.create(product=product, **image_data)
-#             updated_product = Product.objects.get(id=pk)
-#             serialized_product = ProductSerializer(updated_product)
-#             return Response(serialized_product.data, status=status.HTTP_201_CREATED)
-#         except Product.DoesNotExist as e:
-#             print(e)
-#             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             print(f"failed: {e}")
-#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
 
 @api_view(['PUT'])
 def updateProduct(request, pk):
     if request.method == 'PUT':
         try:
             product = Product.objects.get(id=pk)
-            serializer = ProductSerializer(product, data=request.data, partial=True)
+            request_data = request.data.dict()
+            product_data = request_data.copy()  
+            product_data.pop('images', None)
+            product_data.pop('stock', None)
+         
+     
+            stock_data = {
+                'stock_S': request.data.get('stock[stock_S]'),
+                'stock_M': request.data.get('stock[stock_M]'),
+                'stock_L': request.data.get('stock[stock_L]'),
+                'stock_XL': request.data.get('stock[stock_XL]')
+            }            
+            image_data = {}
+            for key in ['main_image', 'sub_image_1', 'sub_image_2', 'sub_image_3']:
+                if f'images[{key}]' in request.FILES:
+                    image_data[key] = request.FILES.get(f'images[{key}]')
+            
+            validated_data = {**product_data}
+            if stock_data:
+                validated_data['stock'] = stock_data
+
+            if image_data:
+                validated_data['images'] = image_data
+            print(validated_data)
+
+            serializer = ProductSerializer(product, data=validated_data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()           
             return Response(serializer.data, status=status.HTTP_200_OK)

@@ -43,7 +43,7 @@ function ProductsPage() {
                       padding:'0',
                       margin:'0'
                     }}
-                    to="/manage-product"
+                    to="/create-product"
                   >
                     <h5 className="table-add-bttn">
                       ADD<i className="fa-solid fa-plus"></i>
@@ -80,7 +80,7 @@ function ProductsPage() {
                   </td>
                   <td className="table-value">
                     <Link
-                      to={`/manage-product/${product.id}`}
+                      to={`/update-product/${product.id}`}
                       style={{
                         textDecoration: "none",
                       }}

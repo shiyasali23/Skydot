@@ -7,6 +7,8 @@ export const OrdersProvider = ({ children }) => {
   const [ordersArray, setOrdersArray] = useState([]);
   const [message, setMessage] = useState(null);
   const [serverSatus, setServerSatus] = useState(null)
+  const [loading, setLoading] = useState(null)
+
 
   const storedToken = localStorage.getItem('token')
 
@@ -38,6 +40,7 @@ export const OrdersProvider = ({ children }) => {
 
   const updateOrder = async (order) => {
     setMessage(null);
+    setLoading(true)
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.put(
@@ -64,6 +67,8 @@ export const OrdersProvider = ({ children }) => {
     } catch (error) {
       handleErrors(error)
       return { success: false };
+    }finally{
+      setLoading(null)
     }
   };
 
@@ -89,7 +94,7 @@ export const OrdersProvider = ({ children }) => {
 
   return (
     <ordersContext.Provider
-      value={{ ordersArray, message,serverSatus, updateOrder, fetchOrders }}
+      value={{ ordersArray, message,serverSatus,loading, updateOrder, fetchOrders }}
     >
       {children}
     </ordersContext.Provider>

@@ -8,6 +8,8 @@ export const NotificationProvider = ({ children }) => {
   const [message, setMessage] = useState(null);
   const [serverSatus, setServerSatus] = useState(null)
   const storedToken = localStorage.getItem('token')
+  const [loading, setLoading] = useState(null)
+
 
 useEffect(()=>{
 if (storedToken) {
@@ -33,6 +35,7 @@ if (storedToken) {
 
   const updateNotification = async (id) => {
     setMessage(null);
+    setLoading(true)
     try {
       const storedToken = localStorage.getItem("token");
       const response = await axios.put(
@@ -59,6 +62,8 @@ if (storedToken) {
     } catch (error) {
       handleErrors(error)
       return { success: false };
+    }finally{
+      setLoading(null)
     }
   };
 
@@ -83,7 +88,7 @@ if (storedToken) {
 
   return (
     <notificationContext.Provider
-      value={{ notificationsArray, message,serverSatus, setMessage, updateNotification,fetchNotifications }}
+      value={{ notificationsArray, message,serverSatus,loading, setMessage, updateNotification,fetchNotifications }}
     >
       {children}
     </notificationContext.Provider>

@@ -5,7 +5,8 @@ import LoginPage from "./Pages/LoginPage";
 import OrdersPage from "./Pages/OrdersPage";
 import UpdateOrderPage from "./Pages/UpdateOrderPage.jsx";
 import AnalyticsPage from "./Pages/AnalyticsPage";
-import ManageProductPage from "./Pages/ManageProductPage.jsx";
+import CreateProductPage from "./Pages/CreateProductPage.jsx";
+import UpdateProductPage from "./Pages/UpdateProductPage.jsx";
 import ProductsPage from "./Pages/ProductsPage.jsx";
 import NotificationPage from "./Pages/NotificationPage.jsx";
 
@@ -32,11 +33,11 @@ function App() {
 
                   <Route path="/products" element={<ProductsPage />} />
                   <Route
-                    path="/manage-product/:id"
-                    element={<ManageProductPage />}
+                    path="/update-product/:id"
+                    element={<UpdateProductPage />}
                   />
                   
-                  <Route path="/manage-product" element={<ManageProductPage />} />
+                  <Route path="/create-product" element={<CreateProductPage />} />
 
                   <Route path="/analytics" element={<AnalyticsPage />} />
                   <Route path="/notification" element={<NotificationPage />} />
