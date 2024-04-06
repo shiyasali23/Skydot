@@ -7,12 +7,12 @@ import Message from "../Components/Message";
 const UpdateOrderPage = () => {
   const { id } = useParams();
   const { ordersArray, updateOrder } = useContext(ordersContext);
-  const [message, setMessage] = useState(null)
+  const [message, setMessage] = useState(null);
 
   const [order, setOrder] = useState(
     ordersArray.find((order) => order.id === id)
   );
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -25,29 +25,25 @@ const UpdateOrderPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { success } = await updateOrder(order);
-    
+
     if (success) {
-      navigate('/orders');
+      navigate("/orders");
     }
-    
   };
-  
+
   return (
     <div className="manage-order-page">
-      <NavBar/>
-      { message && <Message message={message} setMessage={setMessage}/>}
+      <NavBar />
+      {message && <Message message={message} setMessage={setMessage} />}
 
       <form action="" onSubmit={handleSubmit} className="manage-order-form">
         <div className="manage-order-left">
-         
-        <div className="manage-order-value-container">
-              <h5 className="manage-order-value">Payment Method</h5>
-              <h5 className="manage-order-value">
-                {order ? order.payment_method : ""}
-              </h5>
-            </div>
-
-          
+          <div className="manage-order-value-container">
+            <h5 className="manage-order-value">Payment Method</h5>
+            <h5 className="manage-order-value">
+              {order ? order.payment_method : ""}
+            </h5>
+          </div>
 
           <div className="manage-order-value-container">
             <h5 className="manage-order-value">Ordered At</h5>
@@ -117,7 +113,9 @@ const UpdateOrderPage = () => {
             <div className="manage-order-value-container">
               <h5 className="manage-order-value">Status</h5>
               {order?.deliveredAt ? (
-                <h5 className="manage-order-value">Delivered-{new Date(order.deliveredAt).toLocaleDateString()}</h5>
+                <h5 className="manage-order-value">
+                  Delivered-{new Date(order.deliveredAt).toLocaleDateString()}
+                </h5>
               ) : (
                 <select
                   className="manage-order-select"
@@ -142,7 +140,7 @@ const UpdateOrderPage = () => {
             <div className="manage-order-value-container">
               <h5 className="manage-order-value">Total Price</h5>
               <h5 className="manage-order-value">
-              &#8377;{order ? order.total_price : ""}
+                &#8377;{order ? order.total_price : ""}
               </h5>
             </div>
 
@@ -152,8 +150,6 @@ const UpdateOrderPage = () => {
                 &#8377;{order ? order.shipping_price : ""}
               </h5>
             </div>
-
-            
           </div>
 
           <div className="order-items-conatiner">

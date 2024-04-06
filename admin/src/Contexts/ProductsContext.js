@@ -6,6 +6,7 @@ export const productsContext = createContext();
 export const ProductsProvider = ({ children }) => {
   const [productsArray, setProductsArray] = useState([]);
   const [message, setMessage] = useState("");
+  const [serverSatus, setserverSatus] = useState(null)
 
   const storedToken = localStorage.getItem("token");
   useEffect(() => {
@@ -15,7 +16,7 @@ export const ProductsProvider = ({ children }) => {
   }, [storedToken]);
 
   const fetchProducts = async (token) => {
-    setMessage(null);
+    setserverSatus(null)
     try {
       const response = await axios.get("/api/adminpanel/products", {
         headers: {
@@ -25,77 +26,49 @@ export const ProductsProvider = ({ children }) => {
       const products = response.data;
       setProductsArray(products);
     } catch (error) {
-      if (error.response.status === 401) {
-        setMessage("Authentication error Please login again.");
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+      setserverSatus("Server not responding.Please Reaload Again")
     }
   };
 
-  const registerProduct = async (product, productImages) => {
+  const registerProduct = async (productData) => {
     setMessage(null);
     try {
       const storedToken = localStorage.getItem("token");
-      const createProductResponse = await axios.post("/api/adminpanel/product/create/", product, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-          "Content-type": "application/json",
-        },
-      });
-  
-      if (createProductResponse.status === 201) {
-        const product_id = createProductResponse.data;
-        const uploadImagesResponse = await axios.post(
-          `/api/adminpanel/product/images/create/${product_id}/`,
-          productImages,
-          {
-            headers: {
-              Authorization: `Bearer ${storedToken}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-  
-        setProductsArray((prevArray) => [...prevArray, uploadImagesResponse.data]);
-        return { registrationStatus: true }; // Registration successful
-
-      }
-    } catch (error) {
-      handleErrors(error);
-      return { registrationStatus: false };
-    }
-  };
-  
-  const handleErrors = (error) => {
-    if (error.response.status === 401) {
-      setMessage("Authentication error: Please login again.");
-      localStorage.removeItem("token");
-    } else if (error.response.status === 500) {
-      setMessage("Internal server error");
-    } else {
-      setMessage("An unknown error occurred");
-    }
-  };
-  
-
-
-
-  const updateProduct = async (product) => {
-    setMessage(null);
-    try {
-      const storedToken = localStorage.getItem("token");
-      const response = await axios.put(
-        `/api/adminpanel/product/update/${product.id}/`,
-        product,
+      const response = await axios.post(
+        "/api/adminpanel/product/create/",
+        productData,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      const newProduct = response.data;
+      setProductsArray((prevArray) => [...prevArray, newProduct]);
+      return { success: true };
+    } catch (error) {
+      handleErrors(error);
+      return { success: false };
+    }
+  };
+
+  const updateProduct = async (productData) => {
+    setMessage(null);
+    try {
+      const storedToken = localStorage.getItem("token");
+      const response = await axios.post(
+        "/api/adminpanel/product/create/",
+        productData,
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       const updatedProduct = response.data;
       setProductsArray((prevArray) => {
         return prevArray.map((product) => {
@@ -106,14 +79,10 @@ export const ProductsProvider = ({ children }) => {
           }
         });
       });
+      return { success: true };
     } catch (error) {
-      if (error.response.status === 401) {
-        setMessage("Authentication error: Please login again.");
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+      handleErrors(error);
+      return { success: false };
     }
   };
 
@@ -137,26 +106,39 @@ export const ProductsProvider = ({ children }) => {
         return { deleteStatus: true };
       }
     } catch (error) {
-      console.log("Error object:", error);
-      if (error.response && error.response.status === 401) {
-        setMessage("Authentication error: Please login again.");
-        localStorage.removeItem("token");
-      } else if (error.response && error.response.status === 500) {
-        setMessage("Internal server error");
-      } else if (error.response && error.response.status === 404) {
-        setMessage("Product not found. Something went wrong");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+      handleErrors(error);
       return { deleteStatus: false };
     }
   };
 
+  const handleErrors = (error) => {
+    if (error.response && error.response.status === 401) {
+      setMessage("Authentication error: Please login again.");
+      localStorage.removeItem("token");
+    } else if (error.response && error.response.status === 500) {
+      setMessage("Internal server error");
+    } else if (error.response && error.response.status === 404) {
+      setMessage("Product not found. Something went wrong");
+    } else if (error.response && error.response.status === 400) {
+      setMessage("Bad request. Please check your input data.");
+    } else if (error.response && error.response.status === 403) {
+      setMessage(
+        "Forbidden. You don't have permission to access this resource."
+      );
+    } else if (error.response && error.response.status === 409) {
+      setMessage(
+        "Conflict. This action conflicts with the current state of the server."
+      );
+    } else {
+      setMessage("An unknown error occurred");
+    }
+  };
   return (
     <productsContext.Provider
       value={{
         productsArray,
         message,
+        serverSatus,
 
         setMessage,
         updateProduct,

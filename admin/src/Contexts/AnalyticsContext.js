@@ -5,7 +5,7 @@ import { ordersContext } from "./OrdersContext";
 export const analyticsContext = createContext();
 
 export const AnalyticsProvider = ({ children }) => {
-  const { productsArray } = useContext(productsContext);
+  const { productsArray, serverSatus } = useContext(productsContext);
   const { ordersArray } = useContext(ordersContext);
 
   const getProductsData = () => {
@@ -133,7 +133,7 @@ export const AnalyticsProvider = ({ children }) => {
 
   return (
     <analyticsContext.Provider
-      value={{ getMonthlyData, getProductsData }}
+      value={{serverSatus, getMonthlyData, getProductsData }}
     >
       {children}
     </analyticsContext.Provider>

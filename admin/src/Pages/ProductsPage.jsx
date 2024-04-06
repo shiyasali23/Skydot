@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { productsContext } from "../Contexts/ProductsContext";
 
 function ProductsPage() {
-  const { productsArray, message } = useContext(productsContext);
+  const { productsArray,serverSatus } = useContext(productsContext);
   const storedToken = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -17,12 +17,11 @@ function ProductsPage() {
   },[]);
 
 
-
   return (
     <div>
       <NavBar />
-      {message ? (
-        <h2 className="error-message">{message}</h2>
+      {serverSatus ? (
+        <h2 className="error-message">{serverSatus}</h2>
       ) : (
         <table className="table">
             <thead className="table-thead">
@@ -44,7 +43,7 @@ function ProductsPage() {
                       padding:'0',
                       margin:'0'
                     }}
-                    to="/create-product"
+                    to="/manage-product"
                   >
                     <h5 className="table-add-bttn">
                       ADD<i className="fa-solid fa-plus"></i>
@@ -81,7 +80,7 @@ function ProductsPage() {
                   </td>
                   <td className="table-value">
                     <Link
-                      to={`/update-product/${product.id}`}
+                      to={`/manage-product/${product.id}`}
                       style={{
                         textDecoration: "none",
                       }}

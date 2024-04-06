@@ -18,19 +18,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 # ------------------------Product---------------------------
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    # product = serializers.PrimaryKeyRelatedField(read_only=False)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = ProductImage
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     product_id = validated_data.pop("product_id")
-    #     product = Product.objects.get(id=product_id)
-    #     product_image = super().create(product=product, **validated_data)
-    #     updated_product = Product.objects.get(id=product_id)
-    #     return updated_product
-        
 
    
 class StockSerializer(serializers.ModelSerializer): 
@@ -51,14 +44,17 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'        
 
     def create(self, validated_data):
-            stock_data = validated_data.pop('stock', None)
-            if stock_data is not None:
-                with transaction.atomic():
-                    product = Product.objects.create(**validated_data)
-                    Stock.objects.create(product=product, **stock_data)
-                return product
-            else:
-                raise serializers.ValidationError("Stock data Required")
+        stock_data = validated_data.pop('stock', None)
+        image_data = validated_data.pop('images', None)
+        
+        if stock_data is not None and image_data is not None:
+            with transaction.atomic():
+                product = Product.objects.create(**validated_data)
+                Stock.objects.create(product=product, **stock_data)
+                ProductImage.objects.create(product=product, **image_data)
+            return product
+        else:
+            raise serializers.ValidationError("Stock data and image data are required")
             
     # def update(self, instance, validated_data):
     #     stock_data = validated_data.pop('stock', None)

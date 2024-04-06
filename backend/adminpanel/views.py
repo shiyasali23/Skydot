@@ -37,38 +37,54 @@ def adminLogin(request):
 
 @api_view(['POST'])
 def createProduct(request):
-    print(request.data)
-    if request.method == 'POST':
+    if request.method == 'POST':        
         try:
-            serializer = ProductSerializer(data=request.data)
+            product_data = request.data.dict()
+            product_data.pop('images', None)
+            product_data.pop('stock', None)
+            stock_data = {
+                'stock_S': request.data.get('stock[stock_S]'),
+                'stock_M': request.data.get('stock[stock_M]'),
+                'stock_L': request.data.get('stock[stock_L]'),
+                'stock_XL': request.data.get('stock[stock_XL]')
+            }
+            image_data = {
+                'main_image': request.FILES.get("images[main_image]"),
+                'sub_image_1': request.FILES.get("images[sub_image_1]"),
+                'sub_image_2': request.FILES.get("images[sub_image_2]"),
+                'sub_image_3': request.FILES.get("images[sub_image_3]")
+            }
+
+            validated_data = {**product_data, 'stock': stock_data, 'images': image_data}
+            serializer = ProductSerializer(data=validated_data)
             serializer.is_valid(raise_exception=True)
-            product = serializer.save()
-            return Response(product.id, status=status.HTTP_201_CREATED)
+            serializer.save()           
+            return Response(serializer.data, status=status.HTTP_200_OK) 
         except Exception as e:
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
-def uploadProductImages(request, pk):
-    if request.method == 'POST':
-        try:
-            product = Product.objects.get(id=pk)
-            image_data = {
-                'main_image': request.FILES.get("main_image"),
-                'sub_image_1': request.FILES.get("sub_image_1"),
-                'sub_image_2': request.FILES.get("sub_image_2"),
-                'sub_image_3': request.FILES.get("sub_image_3")
-            }
-            product_image = ProductImage.objects.create(product=product, **image_data)
-            updated_product = Product.objects.get(id=pk)
-            serialized_product = ProductSerializer(updated_product)
-            return Response(serialized_product.data, status=status.HTTP_201_CREATED)
-        except Product.DoesNotExist as e:
-            print(e)
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            print(f"failed: {e}")
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+# @api_view(['POST'])
+# def uploadProductImages(request, pk):
+#     if request.method == 'POST':
+#         try:
+#             product = Product.objects.get(id=pk)
+#             image_data = {
+#                 'main_image': request.FILES.get("main_image"),
+#                 'sub_image_1': request.FILES.get("sub_image_1"),
+#                 'sub_image_2': request.FILES.get("sub_image_2"),
+#                 'sub_image_3': request.FILES.get("sub_image_3")
+#             }
+#             product_image = ProductImage.objects.create(product=product, **image_data)
+#             updated_product = Product.objects.get(id=pk)
+#             serialized_product = ProductSerializer(updated_product)
+#             return Response(serialized_product.data, status=status.HTTP_201_CREATED)
+#         except Product.DoesNotExist as e:
+#             print(e)
+#             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             print(f"failed: {e}")
+#             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -191,7 +207,7 @@ def getMessage(request, pk):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# {
+# product_data = {
 #     name:'name',
 #     description:'description',
 #     price:'price',

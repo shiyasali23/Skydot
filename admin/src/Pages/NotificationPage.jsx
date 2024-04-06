@@ -9,6 +9,7 @@ const NotificationPage = () => {
     notificationsArray,
     updateNotification,
     message,
+    serverSatus,
     setMessage,
   } = useContext(notificationContext);
     const navigate = useNavigate();
@@ -29,8 +30,8 @@ const NotificationPage = () => {
   return (
     <div className="notification-page">
       <NavBar />
-      {!notificationsArray.length ? (
-        <h2 className="error-message">Internal Server Error</h2>
+      {serverSatus ? (
+        <h2 className="error-message">{serverSatus}</h2>
       ) : (
         <>
           {message && <Message message={message} setMessage={setMessage} />}

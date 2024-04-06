@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ordersContext } from "../Contexts/OrdersContext";
 
 const OrdersPage = () => {
-  const { ordersArray, message } = useContext(ordersContext);
+  const { ordersArray, serverSatus } = useContext(ordersContext);
   const navigate = useNavigate();
   const storedToken = localStorage.getItem("token");
 
@@ -21,8 +21,8 @@ const OrdersPage = () => {
   return (
     <div className="orders-page">
       <NavBar />
-      {message ? (
-        <h2 className="error-message">{message}</h2>
+      {serverSatus ? (
+        <h2 className="error-message">{serverSatus}</h2>
       ) : (
         <table className="table">
           <thead className="table-thead">

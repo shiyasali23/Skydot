@@ -6,6 +6,7 @@ export const notificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
   const [notificationsArray, setNotificationsArray] = useState([]);
   const [message, setMessage] = useState(null);
+  const [serverSatus, setServerSatus] = useState(null)
   const storedToken = localStorage.getItem('token')
 
 useEffect(()=>{
@@ -16,7 +17,7 @@ if (storedToken) {
 
 
   const fetchNotifications = async (token) => {
-    setMessage(null);
+    setServerSatus(null);
     try {
       const response = await axios.get("/api/adminpanel/messages", {
         headers: {
@@ -26,7 +27,7 @@ if (storedToken) {
       const notifications = response.data;
       setNotificationsArray(notifications);
     } catch (error) {
-      handleErrors(error)
+      setServerSatus("Server not responding.Please Reaload Again")
     }
   };
 
@@ -82,7 +83,7 @@ if (storedToken) {
 
   return (
     <notificationContext.Provider
-      value={{ notificationsArray, message, setMessage, updateNotification,fetchNotifications }}
+      value={{ notificationsArray, message,serverSatus, setMessage, updateNotification,fetchNotifications }}
     >
       {children}
     </notificationContext.Provider>

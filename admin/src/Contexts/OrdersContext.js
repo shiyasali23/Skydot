@@ -6,6 +6,7 @@ export const ordersContext = createContext();
 export const OrdersProvider = ({ children }) => {
   const [ordersArray, setOrdersArray] = useState([]);
   const [message, setMessage] = useState(null);
+  const [serverSatus, setServerSatus] = useState(null)
 
   const storedToken = localStorage.getItem('token')
 
@@ -19,7 +20,7 @@ export const OrdersProvider = ({ children }) => {
 
 
   const fetchOrders = async (token) => {
-    setMessage(null);
+    setServerSatus(null);
     try {
       const response = await axios.get("/api/frontend/orders", {
         headers: {
@@ -28,18 +29,9 @@ export const OrdersProvider = ({ children }) => {
       });
       const orders = response.data;
       setOrdersArray(orders);
-      return { ordersArray: orders };
     } catch (error) {
-      if (error.response.status === 401) {
-        setMessage("Authentication error Please login again.");
-        localStorage.removeItem("token");
-      } else if (error.response.status === 500) {
-        setMessage("Internal server error");
-      } else {
-        setMessage("An unknown error occurred");
-      }
+      setServerSatus("Server not responding.Please Reaload Again")
     }
-    return { success: false, errorMessage: message };
   };
 
 
@@ -97,7 +89,7 @@ export const OrdersProvider = ({ children }) => {
 
   return (
     <ordersContext.Provider
-      value={{ ordersArray, message, updateOrder, fetchOrders }}
+      value={{ ordersArray, message,serverSatus, updateOrder, fetchOrders }}
     >
       {children}
     </ordersContext.Provider>
